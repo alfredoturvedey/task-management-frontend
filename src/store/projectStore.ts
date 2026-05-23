@@ -5,6 +5,8 @@ import type {
   UpdateProjectPayload,
 } from "../types/project.types";
 import { projectsService } from "../api/services/projects.service";
+import type { PaginationMeta } from '../types/pagination.types';
+import { useAuthStore } from "./authStore";
 
 interface ProjectState {
   projects: Project[];
@@ -12,14 +14,23 @@ interface ProjectState {
   isLoading: boolean;
   error: string | null;
 
+  pagination: PaginationMeta;
+
   // Actions
-  fetchProjects: (userId: string) => Promise<void>;
+  fetchProjects: (
+    userId: string,
+    page?: number,
+    limit?: number,
+  ) => Promise<void>;
   fetchProjectById: (id: string) => Promise<void>;
   createProject: (payload: CreateProjectPayload) => Promise<Project>;
   updateProject: (id: string, payload: UpdateProjectPayload) => Promise<void>;
   deleteProject: (userId: string, id: string) => Promise<void>;
   setSelectedProject: (project: Project | null) => void;
   clearError: () => void;
+
+  setPage: (page: number) => void;
+  setLimit: (limit: number) => void;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -27,12 +38,24 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   selectedProject: null,
   isLoading: false,
   error: null,
+  pagination: {
+    currentPage: 1,
+    itemsPerPage: 10,
+    totalItems: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
+  },
 
-  fetchProjects: async (userId: string) => {
+  fetchProjects: async (userId: string, page = 1, limit = 10) => {
     set({ isLoading: true, error: null });
     try {
-      const projects = await projectsService.getAll(userId);
-      set({ projects, isLoading: false });
+      const projects = await projectsService.getAll(userId, page, limit);
+      set({
+        projects: projects.data.data,
+        isLoading: false,
+        pagination: projects.meta,
+      });
     } catch (error: unknown) {
       set({
         error: (error as Error)?.message || "Error al cargar proyectos",
@@ -111,4 +134,27 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   setSelectedProject: (project) => set({ selectedProject: project }),
 
   clearError: () => set({ error: null }),
+
+  setPage: (page: number) => {
+    const { pagination, fetchProjects } = get();
+    if (page >= 1 && page <= pagination.totalPages) {
+      // Necesitas tener el userId disponible. Podrías guardarlo en el store o pasarlo.
+      // Recomendación: guardar userId en el store cuando el usuario se loguea.
+      // Asumiendo que tienes userId en el store (ej. userStore)
+      //const userId = get().userId; // Asegúrate de tener userId en el store
+      const userId = useAuthStore.getState().user?.id;
+      if (userId) {
+        fetchProjects(userId, page, pagination.itemsPerPage);
+      }
+    }
+  },
+
+  setLimit: (limit: number) => {
+    const { fetchProjects } = get();
+    const userId = useAuthStore.getState().user?.id;
+    if (userId) {
+      // Al cambiar límite, reiniciamos a página 1
+      fetchProjects(userId, 1, limit);
+    }
+  },
 }));

@@ -1,3 +1,4 @@
+import { Project } from "@/types/project.types";
 import { create } from "zustand";
 
 interface UIState {
@@ -9,15 +10,19 @@ interface UIState {
     editTask: boolean;
   };
 
+  editingProject: Project | null;
+
   // Actions
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
   openDialog: (dialog: keyof UIState["dialogOpen"]) => void;
   closeDialog: (dialog: keyof UIState["dialogOpen"]) => void;
   closeAllDialogs: () => void;
+  setEditingProject: (project: Project | null) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
+  editingProject: null,
   sidebarOpen: true,
   dialogOpen: {
     newProject: false,
@@ -49,4 +54,7 @@ export const useUIStore = create<UIState>((set) => ({
         editTask: false,
       },
     }),
+
+  setEditingProject: (project: Project | null) =>
+    set({ editingProject: project }),
 }));

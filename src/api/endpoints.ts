@@ -11,7 +11,8 @@ export const ENDPOINTS = {
 
   // Projects
   PROJECTS: {
-    LIST: (userId: string) => `/api/projects/${userId}`,
+    LIST: (userId: string, page: number, limit: number) =>
+      `/api/projects/${userId}?page=${page}&limit=${limit}`,
     CREATE: "/api/projects",
     DETAIL: (id: string) => `/api/projects/${id}`,
     UPDATE: (id: string) => `/api/projects/${id}`,
@@ -24,7 +25,8 @@ export const ENDPOINTS = {
 
   // Tasks
   TASKS: {
-    LIST: (userId: string, projectId: string) => `/api/tasks/${userId}/${projectId}`,
+    LIST: (userId: string, projectId: string, page: number, limit: number) =>
+      `/api/tasks/${userId}/${projectId}?page=${page}&limit=${limit}`,
     CREATE: (userId: string) => `/api/tasks/${userId}`,
     DETAIL: (id: string) => `/api/tasks/${id}`,
     UPDATE: (userId: string, id: string) => `/api/tasks/${userId}/${id}`,

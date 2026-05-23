@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import Button from "../../components/common/Button";
-import ProjectCard from "../../components/features/ProjectCard";
-import Loader from "../../components/common/Loader";
+//import ProjectCard from "../../components/features/ProjectCard";
+//import Loader from "../../components/common/Loader";
 import Alert from "../../components/common/Alert";
 import MainLayout from "../../components/layout/MainLayout";
 import { useAuth } from "../../hooks/useAuth";
@@ -16,17 +16,103 @@ import {
   DialogContent,
 } from "../../components/common/Dialog";
 import ProjectForm from "../../components/forms/ProjectForm";
+import { ProjectList } from "@/components/projects/ProjectList";
+import { Project } from "@/types/project.types";
+import { Pagination } from "@/components/common/Pagination";
 
 const ProjectsPage = () => {
   const { user } = useAuth();
-  const { projects, fetchProjects, isLoading, error } = useProjects();
-  const { dialogOpen, openDialog, closeDialog } = useUIStore();
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+    pagination: projectPagination = {
+      currentPage: 1,
+      itemsPerPage: 10,
+      totalItems: 0,
+      totalPages: 0,
+    },
+    fetchProjects,
+    setPage: setProjectPage,
+    setLimit: setProjectLimit,
+    deleteProject,
+  } = useProjects();
+  const {
+    dialogOpen,
+    openDialog,
+    closeDialog,
+    //editingProject,
+    setEditingProject,
+  } = useUIStore();
+
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+      null,
+  );
+
+  const [showAddTaskModal, setShowAddTaskModal] = useState<string | null>(null);
 
   useEffect(() => {
     if (user?.id) {
       fetchProjects(user.id);
     }
   }, [user?.id]);
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    openDialog("editProject");
+  };
+
+  const handleCloseEditDialog = () => {
+    closeDialog("editProject");
+    setEditingProject(null);
+  };
+
+  const handleSuccess = () => {
+    closeDialog("newProject");
+    if (user?.id) fetchProjects(user.id);
+  };
+
+  const handleEditSuccess = () => {
+    handleCloseEditDialog();
+    if (user?.id) fetchProjects(user.id);
+  };
+
+  const handleViewTasks = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    // Cargar tareas con paginación (asumiendo que useTasks tiene fetchTasks)
+    if (user?.id) {
+      //fetchTasks(user.id, projectId, 1, 10);
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    if (
+      window.confirm(
+        "¿Eliminar este proyecto? Se perderán todas las tareas asociadas.",
+      )
+    ) {
+      if (user?.id) {
+        await deleteProject(user.id, projectId);
+        // Recargar la página actual
+
+        fetchProjects(
+          user.id,
+          projectPagination.currentPage,
+          projectPagination.itemsPerPage,
+        );
+      }
+    }
+  };
+
+  const handleAddTask = (projectId: string) => {
+    setShowAddTaskModal(projectId);
+  };
+
+  const handleProjectPageChange = (page: number) => {
+    if (user?.id) {
+      setProjectPage(page); // esto debe llamar a fetchProjects internamente (según tu store)
+    }
+  };
 
   return (
     <MainLayout>
@@ -46,27 +132,27 @@ const ProjectsPage = () => {
         </div>
 
         {/* Error */}
-        {error && <Alert variant="destructive">{error}</Alert>}
+        {projectsError && <Alert variant="destructive">{projectsError}</Alert>}
 
-        {/* Projects Grid */}
-        {isLoading ? (
-          <Loader message="Cargando proyectos..." />
-        ) : projects.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              No tienes proyectos aún
-            </p>
-            <Button onClick={() => openDialog("newProject")}>
-              Crear tu primer proyecto
-            </Button>
-          </div>
-        )}
+        <ProjectList
+          projects={projects}
+          onViewTasks={handleViewTasks}
+          onEdit={handleEditProject}
+          onDelete={handleDeleteProject}
+          onAddTask={handleAddTask}
+        />
+
+        <Pagination
+          currentPage={projectPagination.currentPage}
+          totalPages={projectPagination.totalPages}
+          onPageChange={handleProjectPageChange}
+          className="mt-4"
+        />
+
+        <div className="text-sm text-gray-500 mt-2 text-center">
+          Mostrando {projects.length} de {projectPagination.totalItems}{" "}
+          proyectos
+        </div>
       </div>
 
       {/* New Project Dialog */}

@@ -6,6 +6,7 @@ export const useProjects = () => {
     selectedProject,
     isLoading,
     error,
+    pagination,
     fetchProjects,
     fetchProjectById,
     createProject,
@@ -13,6 +14,8 @@ export const useProjects = () => {
     deleteProject,
     setSelectedProject,
     clearError,
+    setPage,
+    setLimit
   } = useProjectStore();
 
   return {
@@ -20,6 +23,7 @@ export const useProjects = () => {
     selectedProject,
     isLoading,
     error,
+    pagination,
     fetchProjects,
     fetchProjectById,
     createProject,
@@ -27,5 +31,7 @@ export const useProjects = () => {
     deleteProject,
     setSelectedProject,
     clearError,
+    setPage,
+    setLimit
   };
 };

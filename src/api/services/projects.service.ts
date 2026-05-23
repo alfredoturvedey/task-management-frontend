@@ -6,11 +6,28 @@ import type {
   UpdateProjectPayload,
   AddMemberPayload,
 } from "../../types/project.types";
+import { PaginatedResponse } from "@/types/pagination.types";
 
 export const projectsService = {
-  async getAll(userId: string): Promise<Project[]> {
-    const response = await axiosClient.get(ENDPOINTS.PROJECTS.LIST(userId));
-    return response.data;
+  async getAll(
+    userId: string,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResponse<Project>> {
+    const response = await axiosClient.get(
+      ENDPOINTS.PROJECTS.LIST(userId, page, limit),
+    );
+    return {
+      data: response.data,
+      meta: {
+        currentPage: page,
+        itemsPerPage: limit,
+        totalItems: response.data.data.length,
+        totalPages: Math.ceil(response.data.length / limit),
+        hasNextPage: page < Math.ceil(response.data.length / limit),
+        hasPrevPage: page > 1,
+      },
+    };
   },
 
   async getById(id: string): Promise<Project> {
