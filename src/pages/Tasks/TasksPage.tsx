@@ -128,8 +128,9 @@ const TasksPage = () => {
           <TaskForm
             onSuccess={() => {
               closeDialog("newTask");
-               if (user?.id && projectId) fetchTasks(user.id, projectId);
+              if (user?.id && projectId) fetchTasks(user.id, projectId);
             }}
+            projectId={ projectId!}
           />
         </DialogContent>
       </Dialog>

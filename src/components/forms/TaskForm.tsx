@@ -5,7 +5,7 @@ import { createTaskSchema, type CreateTaskFormData } from '../../validators/task
 import { useProjects } from '../../hooks/useProjects';
 import { useTasks } from '../../hooks/useTasks';
 import { useAuth } from '../../hooks/useAuth';
-import { TaskPriority } from '../../types/task.types';
+import { CreateTaskPayload, TaskPriority } from '../../types/task.types';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import Button from '../common/Button';
@@ -14,9 +14,10 @@ import Alert from '../common/Alert';
 interface TaskFormProps {
   onSuccess?: () => void;
   onError?: (error: string) => void;
+  projectId:string
 }
 
-const TaskForm = ({ onSuccess, onError }: TaskFormProps) => {
+const TaskForm = ({ onSuccess, onError, projectId }: TaskFormProps) => {
   const { user } = useAuth();
   const { projects } = useProjects();
   const { createTask, isLoading, error, clearError } = useTasks();
@@ -40,7 +41,14 @@ const TaskForm = ({ onSuccess, onError }: TaskFormProps) => {
       setSubmitError(null);
       clearError();
       if (!user?.id) throw new Error('Usuario no autenticado');
-      await createTask(user.id, data);
+
+      const payload: CreateTaskPayload = {
+        projectId: projectId,
+        name: data.name,
+        description: data.description,
+        priority: data.priority,
+      }
+      await createTask(user.id, payload);
       reset();
       onSuccess?.();
     } catch (err: unknown) {

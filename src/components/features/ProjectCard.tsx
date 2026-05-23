@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Trash2, Edit2, Users, CheckCircle, TrashIcon, Eye } from 'lucide-react';
+import { Trash2, Edit2, Users, CheckCircle, Eye, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../common/Card';
 import Button from '../common/Button';
 import type { Project } from '../../types/project.types';
 import { useProjects } from '../../hooks/useProjects';
 import { useAuth } from '../../hooks/useAuth';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../common/Dialog';
+import TaskForm from '../forms/TaskForm';
+import { useTasks } from '@/hooks/useTasks';
 
 interface ProjectCardProps {
   project: Project;
@@ -18,6 +21,8 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
   const { user } = useAuth();
   const { deleteProject, isLoading } = useProjects();
   const [deleting, setDeleting] = useState(false);
+  const [isOpenModal, setIsModalOpen] = useState(false);
+  const {fetchTasks } = useTasks()
 
   const isOwner = project.ownerId === user?.id;
 
@@ -25,6 +30,10 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
     // Navega a la página de tareas, pasando el ID del proyecto
     navigate(`/tasks/${project.id}`);
     // O a un modal, etc.
+  };
+
+  const handleAddTask = () => {
+    setIsModalOpen(true);
   };
 
   const handleDelete = async () => {
@@ -39,63 +48,93 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
   };
 
   return (
-    <Card
-      className="hover:shadow-lg transition-shadow cursor-pointer"
-      onClick={() => navigate(`/projects/${project.id}`)}
-    >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle>{project.name}</CardTitle>
-            <CardDescription>
-              {project.description || "Sin descripción"}
-            </CardDescription>
+    <>
+      <Card
+        className="hover:shadow-lg transition-shadow cursor-pointer"
+        onClick={() => navigate(`/projects/${project.id}`)}
+      >
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <CardTitle>{project.name}</CardTitle>
+              <CardDescription>
+                {project.description || "Sin descripción"}
+              </CardDescription>
+            </div>
+            {isOwner && (
+              <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onEdit?.(project)}
+                  className="h-8 w-8"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleDelete}
+                  disabled={deleting || isLoading}
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleViewTasks}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+
+                <Button variant="outline" size="sm" onClick={handleAddTask}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
-          {isOwner && (
-            <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onEdit?.(project)}
-                className="h-8 w-8"
-              >
-                <Edit2 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleDelete}
-                disabled={deleting || isLoading}
-                className="h-8 w-8 text-destructive hover:text-destructive"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleViewTasks}>
-                <Eye className="h-4 w-4" />
-              </Button>
+        </CardHeader>
+
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Users className="h-4 w-4" />
+            {/* <span>{project.members.length} miembro(s)</span> */}
+          </div>
+
+          {project._count && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CheckCircle className="h-4 w-4" />
+              <span>{project._count.tasks} tarea(s)</span>
             </div>
           )}
-        </div>
-      </CardHeader>
 
-      <CardContent className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="h-4 w-4" />
-          {/* <span>{project.members.length} miembro(s)</span> */}
-        </div>
-
-        {project._count && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CheckCircle className="h-4 w-4" />
-            <span>{project._count.tasks} tarea(s)</span>
+          <div className="text-xs text-muted-foreground">
+            {project.archived ? "📦 Archivado" : "✅ Activo"}
           </div>
-        )}
+        </CardContent>
+      </Card>
 
-        <div className="text-xs text-muted-foreground">
-          {project.archived ? "📦 Archivado" : "✅ Activo"}
-        </div>
-      </CardContent>
-    </Card>
+      {/* New Task Dialog */}
+      <Dialog
+        open={isOpenModal}
+        onOpenChange={(open) =>
+          setIsModalOpen(open)
+        }
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Crear Nueva Tarea</DialogTitle>
+            <DialogDescription>
+              Completa los detalles para crear una nueva tarea
+            </DialogDescription>
+          </DialogHeader>
+          <TaskForm
+            onSuccess={() => {
+              setIsModalOpen(false);
+              if (user?.id && project.id) fetchTasks(user.id, project.id);
+            }}
+            projectId={project.id}
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
