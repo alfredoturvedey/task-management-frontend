@@ -18,6 +18,7 @@ import {
   DialogContent,
 } from "../../components/common/Dialog";
 import TaskForm from "../../components/forms/TaskForm";
+import { useParams } from "react-router-dom";
 
 const TasksPage = () => {
   const { user } = useAuth();
@@ -27,17 +28,18 @@ const TasksPage = () => {
     priorityFilter,
     isLoading,
     error,
-    //fetchTasks,
+    fetchTasks,
     setStatusFilter,
     setPriorityFilter,
   } = useTasks();
   const { dialogOpen, openDialog, closeDialog } = useUIStore();
+  const { projectId } = useParams<{ projectId: string }>();
 
   useEffect(() => {
-    if (user?.id) {
-      //fetchTasks(user.id);
+    if (user?.id && projectId) {
+      fetchTasks(user.id, projectId);
     }
-  }, [user?.id]);
+  }, [user?.id, projectId]);
 
   return (
     <MainLayout>
@@ -126,7 +128,7 @@ const TasksPage = () => {
           <TaskForm
             onSuccess={() => {
               closeDialog("newTask");
-              // if (user?.id) fetchTasks(user.id);
+               if (user?.id && projectId) fetchTasks(user.id, projectId);
             }}
           />
         </DialogContent>

@@ -24,7 +24,7 @@ export const ENDPOINTS = {
 
   // Tasks
   TASKS: {
-    LIST: (userId: string) => `/api/tasks/${userId}`,
+    LIST: (userId: string, projectId: string) => `/api/tasks/${userId}/${projectId}`,
     CREATE: (userId: string) => `/api/tasks/${userId}`,
     DETAIL: (id: string) => `/api/tasks/${id}`,
     UPDATE: (userId: string, id: string) => `/api/tasks/${userId}/${id}`,

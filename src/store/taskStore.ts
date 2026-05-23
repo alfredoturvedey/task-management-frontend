@@ -17,7 +17,7 @@ interface TaskState {
   error: string | null;
 
   // Actions
-  fetchTasks: (userId: string) => Promise<void>;
+  fetchTasks: (userId: string, projectId:string) => Promise<void>;
   createTask: (userId: string, payload: CreateTaskPayload) => Promise<Task>;
   updateTask: (
     userId: string,
@@ -48,10 +48,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   isLoading: false,
   error: null,
 
-  fetchTasks: async (userId: string) => {
+  fetchTasks: async (userId: string, projectId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const tasks = await tasksService.getAll(userId);
+      const tasks = await tasksService.getAll(userId, projectId);
       set({ tasks, isLoading: false });
       get().setStatusFilter(get().statusFilter); // Reaplicar filtros
     } catch (error: unknown) {

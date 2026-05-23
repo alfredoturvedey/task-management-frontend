@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trash2, Edit2, Users, CheckCircle } from 'lucide-react';
+import { Trash2, Edit2, Users, CheckCircle, TrashIcon, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../common/Card';
 import Button from '../common/Button';
@@ -21,6 +21,12 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 
   const isOwner = project.ownerId === user?.id;
 
+  const handleViewTasks = () => {
+    // Navega a la página de tareas, pasando el ID del proyecto
+    navigate(`/tasks/${project.id}`);
+    // O a un modal, etc.
+  };
+
   const handleDelete = async () => {
     if (!user?.id) return;
     setDeleting(true);
@@ -41,7 +47,9 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <CardTitle>{project.name}</CardTitle>
-            <CardDescription>{project.description || 'Sin descripción'}</CardDescription>
+            <CardDescription>
+              {project.description || "Sin descripción"}
+            </CardDescription>
           </div>
           {isOwner && (
             <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
@@ -62,6 +70,9 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
+              <Button variant="outline" size="sm" onClick={handleViewTasks}>
+                <Eye className="h-4 w-4" />
+              </Button>
             </div>
           )}
         </div>
@@ -81,7 +92,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
         )}
 
         <div className="text-xs text-muted-foreground">
-          {project.archived ? '📦 Archivado' : '✅ Activo'}
+          {project.archived ? "📦 Archivado" : "✅ Activo"}
         </div>
       </CardContent>
     </Card>

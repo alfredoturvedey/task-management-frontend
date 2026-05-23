@@ -86,14 +86,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route
-          path="/tasks"
+        <Route
+          path="/tasks/:projectId"
           element={
             <ProtectedRoute>
               <TasksPage />
             </ProtectedRoute>
           }
-        /> */}
+        />
 
         {/* Rutas Especiales */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

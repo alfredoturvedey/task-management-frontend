@@ -9,8 +9,8 @@ import type {
 } from "../../types/task.types";
 
 export const tasksService = {
-  async getAll(userId: string): Promise<Task[]> {
-    const response = await axiosClient.get(ENDPOINTS.TASKS.LIST(userId));
+  async getAll(userId: string, projectId: string): Promise<Task[]> {
+    const response = await axiosClient.get(ENDPOINTS.TASKS.LIST(userId, projectId));
     return response.data;
   },
 
