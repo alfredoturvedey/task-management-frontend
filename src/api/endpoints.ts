@@ -39,7 +39,10 @@ export const ENDPOINTS = {
 
   // Users
   USERS: {
-    LIST: "/users",
-    DETAIL: (id: string) => `/users/${id}`,
+    LIST: "/api/users",
+    DETAIL: (id: string) => `/api/users/${id}`,
+    CREATE: "/api/users",
+    UPDATE: (id: string) => `/api/users/${id}`,
+    DELETE: (id: string) => `/api/users/${id}`,
   },
 };

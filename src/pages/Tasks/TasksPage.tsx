@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
@@ -15,12 +15,14 @@ import {
   DialogContent,
 } from "@/components/common/Dialog";
 import Button from "@/components/common/Button";
+import ConfirmAlertDialog from "@/components/common/ConfirmAlertDialog";
 import MainLayout from "@/components/layout/MainLayout";
 import type { Task, TaskStatus, TaskPriority } from "../../types/task.types";
 
 const TasksPage = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const { user } = useAuth();
+  const [taskToDeleteId, setTaskToDeleteId] = useState<string | null>(null);
   const { dialogOpen, openDialog, closeDialog, editingTask, setEditingTask } =
     useUIStore();
   const { projects, fetchProjectById } = useProjects();
@@ -76,13 +78,13 @@ const TasksPage = () => {
     openDialog("editTask");
   };
 
-  const handleDelete = async (taskId: string) => {
-    if (user?.id && confirm("¿Eliminar esta tarea?")) {
-      await deleteTask(user.id, taskId);
-      // Recargar la página actual después de eliminar
+  const confirmDeleteTask = async () => {
+    if (user?.id && taskToDeleteId && projectId) {
+      await deleteTask(user.id, taskToDeleteId);
+      setTaskToDeleteId(null);
       fetchTasks(
         user.id,
-        projectId!,
+        projectId,
         pagination.currentPage,
         pagination.itemsPerPage,
       );
@@ -144,7 +146,7 @@ const TasksPage = () => {
           onLimitChange={handleLimitChange}
           isLoading={isLoading}
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={setTaskToDeleteId}
           onStatusChange={handleStatusChange}
           onPriorityChange={handlePriorityChange}
         />
@@ -211,6 +213,15 @@ const TasksPage = () => {
             />
           </DialogContent>
         </Dialog>
+
+        <ConfirmAlertDialog
+          open={!!taskToDeleteId}
+          onOpenChange={(open) => !open && setTaskToDeleteId(null)}
+          title="Eliminar tarea"
+          description="Esta accion eliminara la tarea seleccionada. Deseas continuar?"
+          confirmText="Eliminar tarea"
+          onConfirm={confirmDeleteTask}
+        />
       </div>
     </MainLayout>
   );

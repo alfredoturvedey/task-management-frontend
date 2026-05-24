@@ -5,6 +5,7 @@ export interface User {
   lastName: string;
   createdAt: string;
   updatedAt: string;
+  isActive?: boolean;
 }
 
 export interface AuthResponse {
@@ -22,4 +23,17 @@ export interface RegisterPayload {
   password: string;
   name: string;
   lastName: string;
+}
+
+export interface CreateUserPayload {
+  email: string;
+  password: string;
+  name: string;
+  lastName: string;
+}
+
+export interface UpdateUserPayload {
+  email?: string;
+  name?: string;
+  lastName?: string;
 }

@@ -15,6 +15,7 @@ import RegisterPage from "./pages/Auth/RegisterPage";
 import ProjectsPage from "./pages/Projects/ProjectsPage";
 import ProjectDetailPage from "./pages/Projects/ProjectDetailPage";
 import TasksPage from "./pages/Tasks/TasksPage";
+import UsersPage from "./pages/Users/UsersPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 // Componente para proteger rutas
@@ -91,6 +92,14 @@ function App() {
           element={
             <ProtectedRoute>
               <TasksPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <UsersPage />
             </ProtectedRoute>
           }
         />

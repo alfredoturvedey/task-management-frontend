@@ -4,6 +4,7 @@ import { useProjects } from "../../hooks/useProjects";
 import { useAuth } from "../../hooks/useAuth";
 import Button from "../common/Button";
 import Alert from "../common/Alert";
+import ConfirmAlertDialog from "../common/ConfirmAlertDialog";
 import AddMemberForm from "./AddMemberForm";
 
 interface ProjectMembersProps {
@@ -16,22 +17,16 @@ const ProjectMembers = ({ project, onMemberAdded }: ProjectMembersProps) => {
   const { removeMember, isLoading, error: storeError } = useProjects();
   const [showAddForm, setShowAddForm] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [memberToDeleteId, setMemberToDeleteId] = useState<string | null>(null);
   const isOwner = user?.id === project.ownerId;
 
-  const handleRemoveMember = async (memberId: string) => {
-    if (!user) return;
-
-    if (
-      !confirm(
-        "¿Estás seguro de que deseas eliminar este miembro del proyecto?"
-      )
-    ) {
-      return;
-    }
+  const confirmRemoveMember = async () => {
+    if (!user || !memberToDeleteId) return;
 
     setDeleteError(null);
     try {
-      await removeMember(user.id, project.id, memberId);
+      await removeMember(user.id, project.id, memberToDeleteId);
+      setMemberToDeleteId(null);
     } catch (err) {
       setDeleteError((err as Error)?.message || "Error al eliminar miembro");
     }
@@ -94,7 +89,7 @@ const ProjectMembers = ({ project, onMemberAdded }: ProjectMembersProps) => {
               {isOwner && member.id !== project.ownerId && (
                 <Button
                   variant="outline"
-                  onClick={() => handleRemoveMember(member.id)}
+                  onClick={() => setMemberToDeleteId(member.id)}
                   disabled={isLoading}
                   className="ml-4 px-3 py-1 text-sm"
                 >
@@ -109,6 +104,15 @@ const ProjectMembers = ({ project, onMemberAdded }: ProjectMembersProps) => {
           </p>
         )}
       </div>
+
+      <ConfirmAlertDialog
+        open={!!memberToDeleteId}
+        onOpenChange={(open) => !open && setMemberToDeleteId(null)}
+        title="Eliminar miembro"
+        description="Esta accion quitara el usuario del proyecto. Deseas continuar?"
+        confirmText="Eliminar miembro"
+        onConfirm={confirmRemoveMember}
+      />
     </div>
   );
 };

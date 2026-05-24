@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "../common/Card";
 import Button from "../common/Button";
+import ConfirmAlertDialog from "../common/ConfirmAlertDialog";
 import Select from "../common/Select";
 import { type Task, TaskStatus, TaskPriority } from "../../types/task.types";
 import { useTasks } from "../../hooks/useTasks";
@@ -26,6 +27,7 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
   const { updateTaskStatus, updateTaskPriority, deleteTask, isLoading } =
     useTasks();
   const [deleting, setDeleting] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const description = formatOptionalText(task.description, "");
 
   const statusIcons = {
@@ -97,7 +99,7 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleDelete}
+              onClick={() => setDeleteDialogOpen(true)}
               disabled={deleting || isLoading}
               aria-label="Eliminar"
               title="Eliminar"
@@ -196,6 +198,15 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
           Creada: {new Date(task.createdAt).toLocaleDateString("es-ES")}
         </div>
       </CardContent>
+
+      <ConfirmAlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Eliminar tarea"
+        description="Esta accion eliminara la tarea seleccionada. Deseas continuar?"
+        confirmText="Eliminar tarea"
+        onConfirm={handleDelete}
+      />
     </Card>
   );
 };

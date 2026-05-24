@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import Button from "../../components/common/Button";
 import Alert from "../../components/common/Alert";
+import ConfirmAlertDialog from "../../components/common/ConfirmAlertDialog";
 import MainLayout from "../../components/layout/MainLayout";
 import { useAuth } from "../../hooks/useAuth";
 import { useProjects } from "../../hooks/useProjects";
@@ -23,6 +24,7 @@ const ProjectsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [memberProjectId, setMemberProjectId] = useState<string | null>(null);
+  const [projectToDeleteId, setProjectToDeleteId] = useState<string | null>(null);
   const {
     projects,
     selectedProject,
@@ -63,22 +65,15 @@ const ProjectsPage = () => {
     navigate(`/tasks/${projectId}`);
   };
 
-  const handleDeleteProject = async (projectId: string) => {
-    if (
-      window.confirm(
-        "¿Eliminar este proyecto? Se perderán todas las tareas asociadas.",
-      )
-    ) {
-      if (user?.id) {
-        await deleteProject(user.id, projectId);
-        // Recargar la página actual
-
-        fetchProjects(
-          user.id,
-          projectPagination.currentPage,
-          projectPagination.itemsPerPage,
-        );
-      }
+  const confirmDeleteProject = async () => {
+    if (user?.id && projectToDeleteId) {
+      await deleteProject(user.id, projectToDeleteId);
+      setProjectToDeleteId(null);
+      fetchProjects(
+        user.id,
+        projectPagination.currentPage,
+        projectPagination.itemsPerPage,
+      );
     }
   };
 
@@ -147,7 +142,7 @@ const ProjectsPage = () => {
           onLimitChange={handleProjectLimitChange}
           onViewTasks={handleViewTasks}
           onEdit={handleEditProject}
-          onDelete={handleDeleteProject}
+          onDelete={setProjectToDeleteId}
           onAddTask={handleAddTask}
           onManageMembers={handleManageMembers}
         />
@@ -255,6 +250,15 @@ const ProjectsPage = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmAlertDialog
+        open={!!projectToDeleteId}
+        onOpenChange={(open) => !open && setProjectToDeleteId(null)}
+        title="Eliminar proyecto"
+        description="Esta accion eliminara el proyecto y sus tareas asociadas. Deseas continuar?"
+        confirmText="Eliminar proyecto"
+        onConfirm={confirmDeleteProject}
+      />
     </MainLayout>
   );
 };

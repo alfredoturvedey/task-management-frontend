@@ -3,6 +3,7 @@ import { Trash2, Edit2, Users, CheckCircle, Eye, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../common/Card';
 import Button from '../common/Button';
+import ConfirmAlertDialog from '../common/ConfirmAlertDialog';
 import type { Project } from '../../types/project.types';
 import { useProjects } from '../../hooks/useProjects';
 import { useAuth } from '../../hooks/useAuth';
@@ -23,6 +24,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
   const { deleteProject, isLoading } = useProjects();
   const [deleting, setDeleting] = useState(false);
   const [isOpenModal, setIsModalOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const {fetchTasks } = useTasks()
 
   const isOwner = project.ownerId === user?.id;
@@ -77,7 +79,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleDelete}
+                  onClick={() => setDeleteDialogOpen(true)}
                   disabled={deleting || isLoading}
                   aria-label="Eliminar"
                   title="Eliminar"
@@ -153,6 +155,15 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
           />
         </DialogContent>
       </Dialog>
+
+      <ConfirmAlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Eliminar proyecto"
+        description="Esta accion eliminara el proyecto y sus tareas asociadas. Deseas continuar?"
+        confirmText="Eliminar proyecto"
+        onConfirm={handleDelete}
+      />
     </>
   );
 };
