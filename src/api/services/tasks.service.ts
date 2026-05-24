@@ -7,6 +7,7 @@ import type {
   UpdateTaskStatusPayload,
   UpdateTaskPriorityPayload,
 } from "../../types/task.types";
+import { ApiPaginatedResponse } from "@/types/pagination.types";
 
 export const tasksService = {
   async getAll(
@@ -14,7 +15,7 @@ export const tasksService = {
     projectId: string,
     page: number,
     limit: number,
-  ): Promise<Task[]> {
+  ): Promise<ApiPaginatedResponse<Task>> {
     const response = await axiosClient.get(
       ENDPOINTS.TASKS.LIST(userId, projectId, page, limit),
     );

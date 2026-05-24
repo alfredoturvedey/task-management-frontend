@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Plus } from "lucide-react";
 import Button from "../../components/common/Button";
-//import ProjectCard from "../../components/features/ProjectCard";
-//import Loader from "../../components/common/Loader";
 import Alert from "../../components/common/Alert";
 import MainLayout from "../../components/layout/MainLayout";
 import { useAuth } from "../../hooks/useAuth";
@@ -18,14 +16,13 @@ import {
 import ProjectForm from "../../components/forms/ProjectForm";
 import { ProjectList } from "@/components/projects/ProjectList";
 import { Project } from "@/types/project.types";
-import { Pagination } from "@/components/common/Pagination";
-import { PageSizeSelector } from "@/components/common/PageSizeSelector";
+import { useNavigate } from "react-router-dom";
 
 const ProjectsPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const {
     projects,
-    isLoading: projectsLoading,
     error: projectsError,
     pagination: projectPagination = {
       currentPage: 1,
@@ -46,12 +43,6 @@ const ProjectsPage = () => {
     setEditingProject,
   } = useUIStore();
 
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-      null,
-  );
-
-  const [showAddTaskModal, setShowAddTaskModal] = useState<string | null>(null);
-
   useEffect(() => {
     if (user?.id) {
       fetchProjects(user.id);
@@ -63,27 +54,8 @@ const ProjectsPage = () => {
     openDialog("editProject");
   };
 
-  const handleCloseEditDialog = () => {
-    closeDialog("editProject");
-    setEditingProject(null);
-  };
-
-  const handleSuccess = () => {
-    closeDialog("newProject");
-    if (user?.id) fetchProjects(user.id);
-  };
-
-  const handleEditSuccess = () => {
-    handleCloseEditDialog();
-    if (user?.id) fetchProjects(user.id);
-  };
-
   const handleViewTasks = (projectId: string) => {
-    setSelectedProjectId(projectId);
-    // Cargar tareas con paginación (asumiendo que useTasks tiene fetchTasks)
-    if (user?.id) {
-      //fetchTasks(user.id, projectId, 1, 10);
-    }
+    navigate(`/tasks/${projectId}`);
   };
 
   const handleDeleteProject = async (projectId: string) => {
@@ -106,7 +78,8 @@ const ProjectsPage = () => {
   };
 
   const handleAddTask = (projectId: string) => {
-    setShowAddTaskModal(projectId);
+    //setShowAddTaskModal(projectId);
+    navigate(`/tasks/${projectId}`);
   };
 
   const handleProjectPageChange = (page: number) => {
@@ -133,10 +106,6 @@ const ProjectsPage = () => {
             </p>
           </div>
 
-          <PageSizeSelector
-            value={projectPagination.itemsPerPage}
-            onChange={handleProjectLimitChange}
-          />
           <Button onClick={() => openDialog("newProject")}>
             <Plus className="mr-2 h-4 w-4" />
             Nuevo Proyecto
@@ -148,23 +117,14 @@ const ProjectsPage = () => {
 
         <ProjectList
           projects={projects}
+          pagination={projectPagination}
+          onPageChange={handleProjectPageChange}
+          onLimitChange={handleProjectLimitChange}
           onViewTasks={handleViewTasks}
           onEdit={handleEditProject}
           onDelete={handleDeleteProject}
           onAddTask={handleAddTask}
         />
-
-        <Pagination
-          currentPage={projectPagination.currentPage}
-          totalPages={projectPagination.totalPages}
-          onPageChange={handleProjectPageChange}
-          className="mt-4"
-        />
-
-        <div className="text-sm text-gray-700 dark:text-gray-300">
-          Mostrando {projects.length} de {projectPagination.totalItems}{" "}
-          proyectos
-        </div>
       </div>
 
       {/* New Project Dialog */}

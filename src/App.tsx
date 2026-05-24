@@ -12,7 +12,6 @@ import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 
 // Páginas Principales
-import DashboardPage from "./pages/Dashboard/DashboardPage";
 import ProjectsPage from "./pages/Projects/ProjectsPage";
 import TasksPage from "./pages/Tasks/TasksPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -41,7 +40,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/projects" replace />;
   }
 
   return <>{children}</>;
@@ -71,14 +70,6 @@ function App() {
 
         {/* Rutas Protegidas */}
         <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/projects"
           element={
             <ProtectedRoute>
@@ -96,7 +87,7 @@ function App() {
         />
 
         {/* Rutas Especiales */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/projects" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

@@ -8,6 +8,7 @@ export const useTasks = () => {
     priorityFilter,
     isLoading,
     error,
+    pagination,
     fetchTasks,
     createTask,
     updateTask,
@@ -16,6 +17,8 @@ export const useTasks = () => {
     updateTaskPriority,
     setStatusFilter,
     setPriorityFilter,
+    setPage,
+    setLimit,
     clearError,
   } = useTaskStore();
 
@@ -26,6 +29,7 @@ export const useTasks = () => {
     priorityFilter,
     isLoading,
     error,
+    pagination,
     fetchTasks,
     createTask,
     updateTask,
@@ -34,6 +38,8 @@ export const useTasks = () => {
     updateTaskPriority,
     setStatusFilter,
     setPriorityFilter,
+    setPage,
+    setLimit,
     clearError,
   };
 };

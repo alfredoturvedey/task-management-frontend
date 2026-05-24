@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from 'react-router-dom';
-import { registerSchema, type RegisterFormData } from '../../validators/auth.validators';
-import { useAuth } from '../../hooks/useAuth';
-import Input from '../common/Input';
-import Button from '../common/Button';
-import Alert from '../common/Alert';
+import { useNavigate } from "react-router-dom";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "../../validators/auth.validators";
+import { useAuth } from "../../hooks/useAuth";
+import Input from "../common/Input";
+import Button from "../common/Button";
+import Alert from "../common/Alert";
 
 interface RegisterFormProps {
   onSuccess?: () => void;
@@ -31,7 +34,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
       clearError();
       await authRegister(data.email, data.password, data.name, data.lastName);
       onSuccess?.();
-      navigate("/dashboard");
+      navigate("/projects");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       setSubmitError(message || "Error al registrarse");
@@ -39,7 +42,10 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-md">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4 w-full max-w-md"
+    >
       {(error || submitError) && (
         <Alert variant="destructive" onClose={clearError}>
           {error || submitError}
@@ -50,7 +56,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         label="Nombre"
         placeholder="Juan"
         type="text"
-        {...register('name')}
+        {...register("name")}
         error={errors.name?.message}
       />
 
@@ -58,7 +64,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         label="Apellido"
         placeholder="Pérez"
         type="text"
-        {...register('lastName')}
+        {...register("lastName")}
         error={errors.lastName?.message}
       />
 
@@ -66,7 +72,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         label="Correo Electrónico"
         placeholder="tu@email.com"
         type="email"
-        {...register('email')}
+        {...register("email")}
         error={errors.email?.message}
       />
 
@@ -74,7 +80,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         label="Contraseña"
         placeholder="••••••••"
         type="password"
-        {...register('password')}
+        {...register("password")}
         error={errors.password?.message}
       />
 
@@ -82,16 +88,16 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         label="Confirmar Contraseña"
         placeholder="••••••••"
         type="password"
-        {...register('confirmPassword')}
+        {...register("confirmPassword")}
         error={errors.confirmPassword?.message}
       />
 
       <Button type="submit" isLoading={isLoading} className="w-full">
-        {isLoading ? 'Registrando...' : 'Registrarse'}
+        {isLoading ? "Registrando..." : "Registrarse"}
       </Button>
 
       <p className="text-sm text-center text-muted-foreground">
-        ¿Ya tienes cuenta?{' '}
+        ¿Ya tienes cuenta?{" "}
         <a href="/login" className="text-primary hover:underline">
           Iniciar sesión
         </a>

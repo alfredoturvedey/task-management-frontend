@@ -1,6 +1,4 @@
 // src/components/projects/ProjectListItem.tsx
-import Button from "../common/Button"; 
-import { Edit, Trash2, Eye, PlusCircle } from "lucide-react";
 import type { Project } from "../../types/project.types";
 
 interface ProjectListItemProps {
@@ -19,50 +17,42 @@ export const ProjectListItem = ({
   onAddTask,
 }: ProjectListItemProps) => {
   return (
-    <tr className="hover:bg-gray-50">
-      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-        {project.name}
+    <tr className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
+      <td className="p-4 text-gray-900 dark:text-white">{project.name}</td>
+      <td className="p-4 text-gray-500 dark:text-gray-400">
+        {project.description || "—"}
       </td>
-      <td className="px-6 py-4 text-gray-500">{project.description || "—"}</td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <td className="p-4 text-sm text-gray-500 dark:text-gray-400">
         {project.id}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <td className="p-4 text-sm text-gray-500 dark:text-gray-400">
         {new Date(project.createdAt).toLocaleDateString()}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-        <Button
-          variant="ghost"
-          size="sm"
+      <td className="p-4 text-right">
+        <button
           onClick={() => onEdit(project)}
-          title="Editar"
+          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
         >
-          <Edit className="w-4 h-4 text-gray-500" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
+          Editar
+        </button>
+        <button
           onClick={() => onDelete(project.id)}
-          title="Eliminar"
+          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 mr-3"
         >
-          <Trash2 className="w-4 h-4 text-gray-500" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
+          Eliminar
+        </button>
+        <button
           onClick={() => onViewTasks(project.id)}
-          title="Ver tareas"
+          className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 mr-3"
         >
-          <Eye className="w-4 h-4 text-gray-500" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
+          Ver tareas
+        </button>
+        <button
           onClick={() => onAddTask(project.id)}
-          title="Añadir tarea"
+          className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
         >
-          <PlusCircle className="w-4 h-4 text-gray-500" />
-        </Button>
+          Añadir tarea
+        </button>
       </td>
     </tr>
   );

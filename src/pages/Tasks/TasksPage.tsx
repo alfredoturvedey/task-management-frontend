@@ -1,140 +1,82 @@
 import { useEffect } from "react";
-import { Plus } from "lucide-react";
-import Button from "../../components/common/Button";
-import Select from "../../components/common/Select";
-import TaskCard from "../../components/features/TaskCard";
-import Loader from "../../components/common/Loader";
-import Alert from "../../components/common/Alert";
-import MainLayout from "../../components/layout/MainLayout";
+import { useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useTasks } from "../../hooks/useTasks";
-import { TaskStatus, TaskPriority } from "../../types/task.types";
-import { useUIStore } from "../../store/uiStore";
-import {
-  Dialog,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogContent,
-} from "../../components/common/Dialog";
-import TaskForm from "../../components/forms/TaskForm";
-import { useParams } from "react-router-dom";
+import TaskTable from "@/components/features/TaskTable";
+import type { Task } from "../../types/task.types";
 
 const TasksPage = () => {
+  const { projectId } = useParams<{ projectId: string }>();
   const { user } = useAuth();
   const {
-    filteredTasks,
-    statusFilter,
-    priorityFilter,
+    tasks,
+    pagination,
     isLoading,
-    error,
     fetchTasks,
-    setStatusFilter,
-    setPriorityFilter,
+    setPage,
+    setLimit,
+    deleteTask,
   } = useTasks();
-  const { dialogOpen, openDialog, closeDialog } = useUIStore();
-  const { projectId } = useParams<{ projectId: string }>();
 
+  // Cargar tareas cuando cambie el proyecto, la página o el límite
   useEffect(() => {
     if (user?.id && projectId) {
-      fetchTasks(user.id, projectId);
+      fetchTasks(
+        user.id,
+        projectId,
+        pagination.currentPage,
+        pagination.itemsPerPage,
+      );
     }
-  }, [user?.id, projectId]);
+  }, [
+    user?.id,
+    projectId,
+    pagination.currentPage,
+    pagination.itemsPerPage,
+    fetchTasks,
+  ]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+  };
+
+  const handleEdit = (task: Task) => {
+    // Aquí puedes abrir un modal para editar la tarea
+    console.log("Editar tarea", task);
+  };
+
+  const handleDelete = async (taskId: string) => {
+    if (user?.id && confirm("¿Eliminar esta tarea?")) {
+      await deleteTask(user.id, taskId);
+      // Recargar la página actual después de eliminar
+      fetchTasks(
+        user.id,
+        projectId!,
+        pagination.currentPage,
+        pagination.itemsPerPage,
+      );
+    }
+  };
 
   return (
-    <MainLayout>
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Tareas</h1>
-            <p className="text-muted-foreground">
-              Administra todas tus tareas y su progreso
-            </p>
-          </div>
-          <Button onClick={() => openDialog("newTask")}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nueva Tarea
-          </Button>
-        </div>
-
-        {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Select
-            label="Filtrar por Estado"
-            options={[
-              { value: "", label: "Todos" },
-              { value: TaskStatus.PENDING, label: "Pendiente" },
-              { value: TaskStatus.IN_PROGRESS, label: "En Progreso" },
-              { value: TaskStatus.COMPLETED, label: "Completada" },
-            ]}
-            value={statusFilter || ""}
-            onChange={(e) => setStatusFilter(e.target.value as TaskStatus)}
-          />
-
-          <Select
-            label="Filtrar por Prioridad"
-            options={[
-              { value: "", label: "Todas" },
-              { value: TaskPriority.LOW, label: "Baja" },
-              { value: TaskPriority.MEDIUM, label: "Media" },
-              { value: TaskPriority.HIGH, label: "Alta" },
-            ]}
-            value={priorityFilter || ""}
-            onChange={(e) =>
-              setPriorityFilter(e.target.value as TaskPriority)
-            }
-          />
-        </div>
-
-        {/* Error */}
-        {error && <Alert variant="destructive">{error}</Alert>}
-
-        {/* Tasks Grid */}
-        {isLoading ? (
-          <Loader message="Cargando tareas..." />
-        ) : filteredTasks.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredTasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              No hay tareas por mostrar
-            </p>
-            <Button onClick={() => openDialog("newTask")}>
-              Crear tu primera tarea
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* New Task Dialog */}
-      <Dialog
-        open={dialogOpen.newTask}
-        onOpenChange={(open) =>
-          open ? openDialog("newTask") : closeDialog("newTask")
-        }
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Crear Nueva Tarea</DialogTitle>
-            <DialogDescription>
-              Completa los detalles para crear una nueva tarea
-            </DialogDescription>
-          </DialogHeader>
-          <TaskForm
-            onSuccess={() => {
-              closeDialog("newTask");
-              if (user?.id && projectId) fetchTasks(user.id, projectId);
-            }}
-            projectId={ projectId!}
-          />
-        </DialogContent>
-      </Dialog>
-    </MainLayout>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+        Tareas del Proyecto
+      </h1>
+      <TaskTable
+        tasks={tasks}
+        pagination={pagination}
+        onPageChange={handlePageChange}
+        onLimitChange={handleLimitChange}
+        isLoading={isLoading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    </div>
   );
 };
 

@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router-dom';
-import { loginSchema, type LoginFormData } from '../../validators/auth.validators';
-import { useAuth } from '../../hooks/useAuth';
-import Input from '../common/Input';
-import Button from '../common/Button';
-import Alert from '../common/Alert';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import {
+  loginSchema,
+  type LoginFormData,
+} from "../../validators/auth.validators";
+import { useAuth } from "../../hooks/useAuth";
+import Input from "../common/Input";
+import Button from "../common/Button";
+import Alert from "../common/Alert";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -31,15 +34,18 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
       clearError();
       await login(data.email, data.password);
       onSuccess?.();
-      navigate('/dashboard');
+      navigate("/projects");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
-      setSubmitError(message || 'Error al iniciar sesión');
+      setSubmitError(message || "Error al iniciar sesión");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-md">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4 w-full max-w-md"
+    >
       {(error || submitError) && (
         <Alert variant="destructive" onClose={clearError}>
           {error || submitError}
@@ -50,7 +56,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
         label="Correo Electrónico"
         placeholder="tu@email.com"
         type="email"
-        {...register('email')}
+        {...register("email")}
         error={errors.email?.message}
       />
 
@@ -58,16 +64,16 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
         label="Contraseña"
         placeholder="••••••••"
         type="password"
-        {...register('password')}
+        {...register("password")}
         error={errors.password?.message}
       />
 
       <Button type="submit" isLoading={isLoading} className="w-full">
-        {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+        {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
       </Button>
 
       <p className="text-sm text-center text-muted-foreground">
-        ¿No tienes cuenta?{' '}
+        ¿No tienes cuenta?{" "}
         <a href="/register" className="text-primary hover:underline">
           Registrarse
         </a>

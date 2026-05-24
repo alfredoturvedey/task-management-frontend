@@ -7,6 +7,8 @@ import type {
   TaskPriority,
 } from "../types/task.types";
 import { tasksService } from "../api/services/tasks.service";
+import { PaginationMeta } from "@/types/pagination.types";
+import { useAuthStore } from "./authStore";
 
 interface TaskState {
   tasks: Task[];
@@ -15,9 +17,15 @@ interface TaskState {
   priorityFilter: TaskPriority | null;
   isLoading: boolean;
   error: string | null;
+  pagination: PaginationMeta;
 
   // Actions
-  fetchTasks: (userId: string, projectId:string) => Promise<void>;
+  fetchTasks: (
+    userId: string,
+    projectId: string,
+    page?: number,
+    limit?: number,
+  ) => Promise<void>;
   createTask: (userId: string, payload: CreateTaskPayload) => Promise<Task>;
   updateTask: (
     userId: string,
@@ -37,22 +45,51 @@ interface TaskState {
   ) => Promise<void>;
   setStatusFilter: (status: TaskStatus | null) => void;
   setPriorityFilter: (priority: TaskPriority | null) => void;
+  setPage: (page: number) => void;
+  setLimit: (limit: number) => void;
   clearError: () => void;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
   tasks: [],
+  pagination: {
+    currentPage: 1,
+    itemsPerPage: 10,
+    totalItems: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
+  },
   filteredTasks: [],
   statusFilter: null,
   priorityFilter: null,
   isLoading: false,
   error: null,
 
-  fetchTasks: async (userId: string, projectId: string) => {
+  fetchTasks: async (
+    userId: string,
+    projectId: string,
+    page: number = 1,
+    limit: number = 10,
+  ) => {
     set({ isLoading: true, error: null });
     try {
-      const tasks = await tasksService.getAll(userId, projectId);
-      set({ tasks, isLoading: false });
+      const response = await tasksService.getAll(
+        userId,
+        projectId,
+        page,
+        limit,
+      );
+      const tasks = response.data;
+      const pagination = {
+        currentPage: Number(response.page),
+        itemsPerPage: Number(response.limit),
+        totalItems: Number(response.total),
+        totalPages: Number(response.totalPages),
+        hasNextPage: Number(response.page) < Number(response.totalPages),
+        hasPrevPage: Number(response.page) > 1,
+      };
+      set({ tasks, pagination, isLoading: false });
       get().setStatusFilter(get().statusFilter); // Reaplicar filtros
     } catch (error: unknown) {
       set({
@@ -165,4 +202,17 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 
   clearError: () => set({ error: null }),
+
+  setPage: (page: number) => {
+    set({ pagination: { ...get().pagination, currentPage: page } });
+    const { user } = useAuthStore.getState();
+    const { projectId } = get(); // Necesitarás almacenar el projectId actual en el store
+    // ... trigger de refetch
+  },
+  setLimit: (limit: number) => {
+    set({
+      pagination: { ...get().pagination, itemsPerPage: limit, currentPage: 1 },
+    });
+    // ... trigger de refetch
+  },
 }));

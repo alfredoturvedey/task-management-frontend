@@ -1,9 +1,8 @@
-// src/components/projects/ProjectList.tsx
-import { ProjectListItem } from "./ProjectListItem";
-import type { Project } from "../../types/project.types";
+import Loader from "../common/Loader";
+import type { Task } from "../../types/task.types";
 
-interface ProjectListProps {
-  projects: Project[];
+interface TaskTableProps {
+  tasks: Task[];
   pagination: {
     currentPage: number;
     itemsPerPage: number;
@@ -12,36 +11,28 @@ interface ProjectListProps {
   };
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
-  isLoading?: boolean;
-  onViewTasks: (projectId: string) => void;
-  onEdit: (project: Project) => void;
-  onDelete: (projectId: string) => void;
-  onAddTask: (projectId: string) => void;
+  isLoading: boolean;
+  onEdit: (task: Task) => void;
+  onDelete: (taskId: string) => void;
 }
 
-export const ProjectList = ({
-  projects,
+const TaskTable = ({
+  tasks,
   pagination,
   onPageChange,
   onLimitChange,
-  isLoading = false,
-  onViewTasks,
+  isLoading,
   onEdit,
   onDelete,
-  onAddTask,
-}: ProjectListProps) => {
+}: TaskTableProps) => {
   if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Cargando proyectos...</p>
-      </div>
-    );
+    return <Loader message="Cargando tareas..." />;
   }
 
-  if (projects.length === 0) {
+  if (tasks.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">No hay proyectos para mostrar</p>
+        <p className="text-muted-foreground">No hay tareas por mostrar</p>
       </div>
     );
   }
@@ -56,13 +47,10 @@ export const ProjectList = ({
                 Nombre
               </th>
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
-                Descripción
+                Estado
               </th>
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
-                ID
-              </th>
-              <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
-                Fecha Creación
+                Prioridad
               </th>
               <th className="text-right p-4 font-semibold text-gray-900 dark:text-white">
                 Acciones
@@ -70,15 +58,63 @@ export const ProjectList = ({
             </tr>
           </thead>
           <tbody>
-            {projects.map((project) => (
-              <ProjectListItem
-                key={project.id}
-                project={project}
-                onViewTasks={onViewTasks}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onAddTask={onAddTask}
-              />
+            {tasks.map((task) => (
+              <tr
+                key={task.id}
+                className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900"
+              >
+                <td className="p-4 text-gray-900 dark:text-white">
+                  {task.name}
+                </td>
+                <td className="p-4">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      task.status === "completed"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        : task.status === "in_progress"
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                    }`}
+                  >
+                    {task.status === "completed"
+                      ? "Completada"
+                      : task.status === "in_progress"
+                        ? "En progreso"
+                        : "Pendiente"}
+                  </span>
+                </td>
+                <td className="p-4">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      task.priority === "high"
+                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        : task.priority === "medium"
+                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                    }`}
+                  >
+                    {task.priority === "high"
+                      ? "Alta"
+                      : task.priority === "medium"
+                        ? "Media"
+                        : "Baja"}
+                  </span>
+                </td>
+                <td className="p-4 text-right">
+                  <button
+                    onClick={() => onEdit(task)}
+                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => onDelete(task.id)}
+                    className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
@@ -128,3 +164,5 @@ export const ProjectList = ({
     </div>
   );
 };
+
+export default TaskTable;
