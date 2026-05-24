@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -30,6 +30,14 @@ interface TaskFormProps {
   task?: Task | null;
 }
 
+const getTaskAssignedToId = (task?: Task | null) =>
+  task?.assignedToId || task?.assignedTo?.id || "";
+
+const getUserLabel = (user: User) =>
+  [user.name, user.lastName].filter(Boolean).join(" ") || user.email;
+
+const normalizeOptionalId = (value?: string) => value || undefined;
+
 const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
   const { user } = useAuth();
   const { projects } = useProjects();
@@ -38,6 +46,7 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const isEditing = !!task;
+  const assignedToId = getTaskAssignedToId(task);
 
   // Cargar todos los usuarios del sistema
   useEffect(() => {
@@ -68,14 +77,26 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: task.name,
           description: task.description || "",
           priority: task.priority,
-          assignedToId: task.assignedToId || undefined,
+          assignedToId,
         }
       : {
           projectId: projectId,
           priority: TaskPriority.MEDIUM,
-          assignedToId: undefined,
+          assignedToId: "",
         },
   });
+
+  const assignableUsers = useMemo(() => {
+    if (!task?.assignedTo) {
+      return allUsers;
+    }
+
+    const assignedUserExists = allUsers.some(
+      (systemUser) => systemUser.id === task.assignedTo?.id,
+    );
+
+    return assignedUserExists ? allUsers : [task.assignedTo, ...allUsers];
+  }, [allUsers, task]);
 
   useEffect(() => {
     if (task) {
@@ -83,7 +104,7 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
         name: task.name,
         description: task.description || "",
         priority: task.priority,
-        assignedToId: task.assignedToId || undefined,
+        assignedToId: getTaskAssignedToId(task),
       });
     }
   }, [task, reset]);
@@ -104,7 +125,9 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: data.name,
           description: data.description,
           priority: data.priority,
-          assignedToId: (data as UpdateTaskFormData).assignedToId,
+          assignedToId: normalizeOptionalId(
+            (data as UpdateTaskFormData).assignedToId,
+          ),
         };
         await updateTask(user.id, task.id, payload);
       } else {
@@ -114,7 +137,7 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: createData.name,
           description: createData.description,
           priority: createData.priority,
-          assignedToId: createData.assignedToId,
+          assignedToId: normalizeOptionalId(createData.assignedToId),
         };
         await createTask(user.id, payload);
       }
@@ -184,9 +207,9 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
         label="Asignado a (Opcional)"
         options={[
           { value: "", label: "Sin asignar" },
-          ...allUsers.map((u) => ({
+          ...assignableUsers.map((u) => ({
             value: u.id,
-            label: `${u.name} ${u.lastName}`,
+            label: getUserLabel(u),
           })),
         ]}
         disabled={usersLoading}
