@@ -68,6 +68,7 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
         const payload: UpdateProjectPayload = {
           name: data.name,
           description: data.description || "",
+          userId: user?.id || "",
         };
         await updateProject(project.id, payload);
       } else {

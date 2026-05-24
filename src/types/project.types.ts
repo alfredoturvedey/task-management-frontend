@@ -25,6 +25,7 @@ export interface UpdateProjectPayload {
   name?: string;
   description?: string;
   archived?: boolean;
+  userId: string;
 }
 
 export interface AddMemberPayload {
