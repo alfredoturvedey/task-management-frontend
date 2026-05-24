@@ -5,7 +5,7 @@ import type {
   UpdateProjectPayload,
 } from "../types/project.types";
 import { projectsService } from "../api/services/projects.service";
-import type { PaginationMeta } from '../types/pagination.types';
+import type { PaginationMeta } from "../types/pagination.types";
 import { useAuthStore } from "./authStore";
 
 interface ProjectState {
@@ -52,7 +52,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       const projects = await projectsService.getAll(userId, page, limit);
       set({
-        projects: projects.data.data,
+        projects: projects.data,
         isLoading: false,
         pagination: projects.meta,
       });

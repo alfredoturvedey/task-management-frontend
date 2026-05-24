@@ -1,5 +1,21 @@
-import React, { useCallback } from "react";
+import React, { useCallback, createContext, useContext } from "react";
+import { X } from "lucide-react";
 import cn from "../../utils/cn";
+
+interface DialogContextValue {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const DialogContext = createContext<DialogContextValue | null>(null);
+
+const useDialogContext = () => {
+  const context = useContext(DialogContext);
+  if (!context) {
+    throw new Error("Dialog components must be used within a Dialog");
+  }
+  return context;
+};
 
 export interface DialogProps {
   open: boolean;
@@ -16,7 +32,7 @@ const Dialog = ({ open, onOpenChange, children, className }: DialogProps) => {
   if (!open) return null;
 
   return (
-    <>
+    <DialogContext.Provider value={{ open, onOpenChange }}>
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm"
@@ -33,7 +49,7 @@ const Dialog = ({ open, onOpenChange, children, className }: DialogProps) => {
       >
         {children}
       </div>
-    </>
+    </DialogContext.Provider>
   );
 };
 
@@ -53,16 +69,29 @@ DialogContent.displayName = "DialogContent";
 const DialogHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex flex-col space-y-2 text-center sm:text-left",
-      className,
-    )}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { onOpenChange } = useDialogContext();
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-col space-y-2 text-center sm:text-left relative",
+        className,
+      )}
+      {...props}
+    >
+      <button
+        onClick={() => onOpenChange(false)}
+        className="absolute right-0 top-0 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      >
+        <X className="h-4 w-4" />
+        <span className="sr-only">Cerrar</span>
+      </button>
+      {props.children}
+    </div>
+  );
+});
 DialogHeader.displayName = "DialogHeader";
 
 const DialogTitle = React.forwardRef<

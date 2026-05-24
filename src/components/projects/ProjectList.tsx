@@ -114,11 +114,11 @@ export const ProjectList = ({
             Anterior
           </button>
           <span className="text-sm text-gray-700 dark:text-gray-300">
-            Página {pagination.currentPage} de {pagination.totalPages}
+            Página {pagination.currentPage} de {pagination.totalPages || 1}
           </span>
           <button
             onClick={() => onPageChange(pagination.currentPage + 1)}
-            disabled={pagination.currentPage === pagination.totalPages}
+            disabled={pagination.currentPage === (pagination.totalPages || 1)}
             className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
           >
             Siguiente

@@ -17,14 +17,26 @@ export const projectsService = {
     const response = await axiosClient.get(
       ENDPOINTS.PROJECTS.LIST(userId, page, limit),
     );
+    // Asumimos que la API devuelve la paginación directamente en la respuesta
+    // Si la estructura es { data: [...], meta: {...} }, usamos eso
+    // Si la estructura es { data: [...], total: ..., page: ..., limit: ..., totalPages: ... }, extraemos esos campos
+    const responseData = response.data;
+    const projects = responseData.data || responseData;
+    const totalItems =
+      responseData.total || responseData.meta?.totalItems || projects.length;
+    const totalPages =
+      responseData.totalPages ||
+      responseData.meta?.totalPages ||
+      Math.ceil(totalItems / limit);
+
     return {
-      data: response.data,
+      data: projects,
       meta: {
         currentPage: page,
         itemsPerPage: limit,
-        totalItems: response.data.data.length,
-        totalPages: Math.ceil(response.data.length / limit),
-        hasNextPage: page < Math.ceil(response.data.length / limit),
+        totalItems: totalItems,
+        totalPages: totalPages || 1, // Evitar NaN
+        hasNextPage: page < (totalPages || 1),
         hasPrevPage: page > 1,
       },
     };

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { FolderOpen, CheckSquare, Settings, X } from "lucide-react";
+import { FolderOpen, X } from "lucide-react";
 import { useUIStore } from "../../store/uiStore";
 import Button from "../common/Button";
 import cn from "../../utils/cn";
@@ -8,11 +8,7 @@ const Sidebar = () => {
   const location = useLocation();
   const { sidebarOpen, setSidebarOpen } = useUIStore();
 
-  const links = [
-    { href: "/projects", label: "Proyectos", icon: FolderOpen },
-    { href: "/tasks", label: "Tareas", icon: CheckSquare },
-    { href: "/settings", label: "Configuración", icon: Settings },
-  ];
+  const links = [{ href: "/projects", label: "Proyectos", icon: FolderOpen }];
 
   return (
     <>
