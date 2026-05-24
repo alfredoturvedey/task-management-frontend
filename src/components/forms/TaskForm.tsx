@@ -16,6 +16,8 @@ import {
   TaskPriority,
   Task,
 } from "../../types/task.types";
+import { usersService } from "../../api/services/users.service";
+import type { User } from "../../types/auth.types";
 import Input from "../common/Input";
 import Select from "../common/Select";
 import Button from "../common/Button";
@@ -33,7 +35,26 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
   const { projects } = useProjects();
   const { createTask, updateTask, isLoading, error, clearError } = useTasks();
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
   const isEditing = !!task;
+
+  // Cargar todos los usuarios del sistema
+  useEffect(() => {
+    const loadUsers = async () => {
+      setUsersLoading(true);
+      try {
+        const users = await usersService.getAll();
+        setAllUsers(users);
+      } catch (err) {
+        console.error("Error cargando usuarios:", err);
+      } finally {
+        setUsersLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
 
   const {
     register,
@@ -47,10 +68,12 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: task.name,
           description: task.description || "",
           priority: task.priority,
+          assignedToId: task.assignedToId || undefined,
         }
       : {
           projectId: projectId,
           priority: TaskPriority.MEDIUM,
+          assignedToId: undefined,
         },
   });
 
@@ -60,9 +83,15 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
         name: task.name,
         description: task.description || "",
         priority: task.priority,
+        assignedToId: task.assignedToId || undefined,
       });
     }
   }, [task, reset]);
+
+  const projectIdError =
+    "projectId" in errors ? errors.projectId?.message : undefined;
+  const assignedToError =
+    "assignedToId" in errors ? errors.assignedToId?.message : undefined;
 
   const onSubmit = async (data: CreateTaskFormData | UpdateTaskFormData) => {
     try {
@@ -75,14 +104,17 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: data.name,
           description: data.description,
           priority: data.priority,
+          assignedToId: (data as UpdateTaskFormData).assignedToId,
         };
         await updateTask(user.id, task.id, payload);
       } else {
+        const createData = data as CreateTaskFormData;
         const payload: CreateTaskPayload = {
-          projectId: projectId!,
-          name: data.name,
-          description: data.description,
-          priority: data.priority,
+          projectId: createData.projectId,
+          name: createData.name,
+          description: createData.description,
+          priority: createData.priority,
+          assignedToId: createData.assignedToId,
         };
         await createTask(user.id, payload);
       }
@@ -134,7 +166,7 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           label="Proyecto"
           options={projects.map((p) => ({ value: p.id, label: p.name }))}
           {...register("projectId")}
-          error={(errors as any).projectId?.message}
+          error={projectIdError}
         />
       )}
 
@@ -147,6 +179,24 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
         ]}
         {...register("priority")}
       />
+
+      <Select
+        label="Asignado a (Opcional)"
+        options={[
+          { value: "", label: "Sin asignar" },
+          ...allUsers.map((u) => ({
+            value: u.id,
+            label: `${u.name} ${u.lastName}`,
+          })),
+        ]}
+        disabled={usersLoading}
+        {...register("assignedToId")}
+        error={assignedToError}
+      />
+
+      {usersLoading && (
+        <p className="text-xs text-muted-foreground">Cargando usuarios...</p>
+      )}
 
       <div className="flex gap-2">
         <Button type="submit" isLoading={isLoading}>

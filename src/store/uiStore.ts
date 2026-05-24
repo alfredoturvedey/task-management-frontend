@@ -9,6 +9,7 @@ interface UIState {
     newTask: boolean;
     editProject: boolean;
     editTask: boolean;
+    projectMembers: boolean;
   };
 
   editingProject: Project | null;
@@ -33,6 +34,7 @@ export const useUIStore = create<UIState>((set) => ({
     newTask: false,
     editProject: false,
     editTask: false,
+    projectMembers: false,
   },
 
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
@@ -56,6 +58,7 @@ export const useUIStore = create<UIState>((set) => ({
         newTask: false,
         editProject: false,
         editTask: false,
+        projectMembers: false,
       },
     }),
 

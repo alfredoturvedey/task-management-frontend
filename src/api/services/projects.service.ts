@@ -8,6 +8,32 @@ import type {
 } from "../../types/project.types";
 import { PaginatedResponse } from "@/types/pagination.types";
 
+const unwrapData = <T>(responseData: unknown): T => {
+  let current = responseData;
+
+  while (current && typeof current === "object") {
+    if ("data" in current) {
+      current = (current as { data: unknown }).data;
+      continue;
+    }
+
+    if ("project" in current) {
+      current = (current as { project: unknown }).project;
+      continue;
+    }
+
+    break;
+  }
+
+  return current as T;
+};
+
+const ensureProjectId = (project: Project, fallbackId: string): Project => ({
+  ...project,
+  id: project.id || fallbackId,
+  members: project.members ?? [],
+});
+
 export const projectsService = {
   async getAll(
     userId: string,
@@ -44,12 +70,13 @@ export const projectsService = {
 
   async getById(id: string): Promise<Project> {
     const response = await axiosClient.get(ENDPOINTS.PROJECTS.DETAIL(id));
-    return response.data;
+    return ensureProjectId(unwrapData<Project>(response.data), id);
   },
 
   async create(payload: CreateProjectPayload): Promise<Project> {
     const response = await axiosClient.post(ENDPOINTS.PROJECTS.CREATE, payload);
-    return response.data;
+    const project = unwrapData<Project>(response.data);
+    return project.id ? project : { ...project, members: project.members ?? [] };
   },
 
   async update(id: string, payload: UpdateProjectPayload): Promise<Project> {
@@ -57,7 +84,7 @@ export const projectsService = {
       ENDPOINTS.PROJECTS.UPDATE(id),
       payload,
     );
-    return response.data;
+    return ensureProjectId(unwrapData<Project>(response.data), id);
   },
 
   async delete(userId: string, id: string): Promise<void> {
@@ -73,7 +100,8 @@ export const projectsService = {
       ENDPOINTS.PROJECTS.ADD_MEMBER(userId, projectId),
       payload,
     );
-    return response.data;
+
+    return ensureProjectId(unwrapData<Project>(response.data), projectId);
   },
 
   async removeMember(

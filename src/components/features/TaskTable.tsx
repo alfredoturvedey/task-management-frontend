@@ -56,6 +56,9 @@ const TaskTable = ({
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
                 Prioridad
               </th>
+              <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
+                Asignado a
+              </th>
               <th className="text-right p-4 font-semibold text-gray-900 dark:text-white">
                 Acciones
               </th>
@@ -132,6 +135,17 @@ const TaskTable = ({
                         : task.priority === "medium"
                           ? "Media"
                           : "Baja"}
+                    </span>
+                  )}
+                </td>
+                <td className="p-4">
+                  {task.assignedTo ? (
+                    <span className="text-sm text-gray-900 dark:text-gray-200">
+                      {task.assignedTo.name} {task.assignedTo.lastName}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-gray-500 dark:text-gray-400 italic">
+                      Sin asignar
                     </span>
                   )}
                 </td>

@@ -36,4 +36,10 @@ export const ENDPOINTS = {
     UPDATE_PRIORITY: (userId: string, id: string) =>
       `/api/tasks/${userId}/${id}/priority`,
   },
+
+  // Users
+  USERS: {
+    LIST: "/users",
+    DETAIL: (id: string) => `/users/${id}`,
+  },
 };

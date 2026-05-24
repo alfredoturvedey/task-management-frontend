@@ -64,18 +64,23 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
       setSubmitError(null);
       clearError();
 
+      if (!user?.id) {
+        throw new Error("Usuario no autenticado");
+      }
+
       if (isEditing && project) {
         const payload: UpdateProjectPayload = {
           name: data.name,
           description: data.description || "",
-          userId: user?.id || "",
+          userId: user.id,
         };
         await updateProject(project.id, payload);
       } else {
+        const createData = data as CreateProjectFormData;
         const payload: CreateProjectPayload = {
-          name: data.name,
+          name: createData.name,
           description: data.description || "",
-          userId: user?.id || "",
+          userId: user.id,
         };
         await createProject(payload);
       }

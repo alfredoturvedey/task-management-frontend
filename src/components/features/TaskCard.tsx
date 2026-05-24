@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { Trash2, Edit2, CheckCircle, Clock, AlertCircle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../common/Card';
-import Button from '../common/Button';
-import Select from '../common/Select';
-import { type Task, TaskStatus, TaskPriority } from '../../types/task.types';
-import { useTasks } from '../../hooks/useTasks';
-import { useAuth } from '../../hooks/useAuth';
-import cn from '../../utils/cn';
+import { useState } from "react";
+import { Trash2, Edit2, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../common/Card";
+import Button from "../common/Button";
+import Select from "../common/Select";
+import { type Task, TaskStatus, TaskPriority } from "../../types/task.types";
+import { useTasks } from "../../hooks/useTasks";
+import { useAuth } from "../../hooks/useAuth";
+import cn from "../../utils/cn";
 
 interface TaskCardProps {
   task: Task;
@@ -16,7 +22,8 @@ interface TaskCardProps {
 
 const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
   const { user } = useAuth();
-  const { updateTaskStatus, updateTaskPriority, deleteTask, isLoading } = useTasks();
+  const { updateTaskStatus, updateTaskPriority, deleteTask, isLoading } =
+    useTasks();
   const [deleting, setDeleting] = useState(false);
 
   const statusIcons = {
@@ -26,21 +33,21 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
   };
 
   const statusLabels = {
-    [TaskStatus.PENDING]: 'Pendiente',
-    [TaskStatus.IN_PROGRESS]: 'En Progreso',
-    [TaskStatus.COMPLETED]: 'Completada',
+    [TaskStatus.PENDING]: "Pendiente",
+    [TaskStatus.IN_PROGRESS]: "En Progreso",
+    [TaskStatus.COMPLETED]: "Completada",
   };
 
   const priorityColors = {
-    [TaskPriority.LOW]: 'text-green-600',
-    [TaskPriority.MEDIUM]: 'text-yellow-600',
-    [TaskPriority.HIGH]: 'text-red-600',
+    [TaskPriority.LOW]: "text-green-600",
+    [TaskPriority.MEDIUM]: "text-yellow-600",
+    [TaskPriority.HIGH]: "text-red-600",
   };
 
   const priorityLabels = {
-    [TaskPriority.LOW]: 'Baja',
-    [TaskPriority.MEDIUM]: 'Media',
-    [TaskPriority.HIGH]: 'Alta',
+    [TaskPriority.LOW]: "Baja",
+    [TaskPriority.MEDIUM]: "Media",
+    [TaskPriority.HIGH]: "Alta",
   };
 
   const handleStatusChange = async (newStatus: TaskStatus) => {
@@ -103,42 +110,84 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">Estado</label>
+            <label className="text-xs font-medium text-muted-foreground">
+              Estado
+            </label>
             <div className="flex items-center gap-2">
               {statusIcons[task.status]}
               <Select
                 options={[
-                  { value: TaskStatus.PENDING, label: statusLabels[TaskStatus.PENDING] },
-                  { value: TaskStatus.IN_PROGRESS, label: statusLabels[TaskStatus.IN_PROGRESS] },
-                  { value: TaskStatus.COMPLETED, label: statusLabels[TaskStatus.COMPLETED] },
+                  {
+                    value: TaskStatus.PENDING,
+                    label: statusLabels[TaskStatus.PENDING],
+                  },
+                  {
+                    value: TaskStatus.IN_PROGRESS,
+                    label: statusLabels[TaskStatus.IN_PROGRESS],
+                  },
+                  {
+                    value: TaskStatus.COMPLETED,
+                    label: statusLabels[TaskStatus.COMPLETED],
+                  },
                 ]}
                 value={task.status}
-                onChange={(e) => handleStatusChange(e.target.value as TaskStatus)}
+                onChange={(e) =>
+                  handleStatusChange(e.target.value as TaskStatus)
+                }
                 className="text-xs"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">Prioridad</label>
+            <label className="text-xs font-medium text-muted-foreground">
+              Prioridad
+            </label>
             <div className="flex items-center gap-2">
-              <span className={cn('h-3 w-3 rounded-full', priorityColors[task.priority])} />
+              <span
+                className={cn(
+                  "h-3 w-3 rounded-full",
+                  priorityColors[task.priority],
+                )}
+              />
               <Select
                 options={[
-                  { value: TaskPriority.LOW, label: priorityLabels[TaskPriority.LOW] },
-                  { value: TaskPriority.MEDIUM, label: priorityLabels[TaskPriority.MEDIUM] },
-                  { value: TaskPriority.HIGH, label: priorityLabels[TaskPriority.HIGH] },
+                  {
+                    value: TaskPriority.LOW,
+                    label: priorityLabels[TaskPriority.LOW],
+                  },
+                  {
+                    value: TaskPriority.MEDIUM,
+                    label: priorityLabels[TaskPriority.MEDIUM],
+                  },
+                  {
+                    value: TaskPriority.HIGH,
+                    label: priorityLabels[TaskPriority.HIGH],
+                  },
                 ]}
                 value={task.priority}
-                onChange={(e) => handlePriorityChange(e.target.value as TaskPriority)}
+                onChange={(e) =>
+                  handlePriorityChange(e.target.value as TaskPriority)
+                }
                 className="text-xs"
               />
             </div>
           </div>
         </div>
 
+        {task.assignedTo && (
+          <div className="pt-2 border-t">
+            <label className="text-xs font-medium text-muted-foreground">
+              Asignado a
+            </label>
+            <p className="text-sm text-foreground mt-1">
+              {task.assignedTo.name} {task.assignedTo.lastName}
+            </p>
+          </div>
+        )}
+
         <div className="text-xs text-muted-foreground">
-          Creada: {new Date(task.createdAt).toLocaleDateString('es-ES')}
+          Creada: {new Date(task.createdAt).toLocaleDateString("es-ES")}
         </div>
       </CardContent>
     </Card>

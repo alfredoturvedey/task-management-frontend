@@ -5,13 +5,17 @@ export const createTaskSchema = z.object({
   name: z
     .string({ error: "El nombre de la tarea es requerido" })
     .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(200, "El nombre no puede exceder 200 caracteres"),
+    .max(100, "El nombre no puede exceder 100 caracteres"),
   description: z
     .string()
-    .max(1000, "La descripción no puede exceder 1000 caracteres")
+    .max(500, "La descripción no puede exceder 500 caracteres")
     .optional(),
   priority: z.nativeEnum(TaskPriority).optional(),
   projectId: z.string({ error: "El proyecto es requerido" }),
+  assignedToId: z
+    .string()
+    .uuid("El ID del usuario debe ser un UUID válido")
+    .optional(),
 });
 
 export const updateTaskSchema = createTaskSchema

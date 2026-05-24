@@ -7,6 +7,7 @@ interface ProjectListItemProps {
   onEdit: (project: Project) => void;
   onDelete: (projectId: string) => void;
   onAddTask: (projectId: string) => void;
+  onManageMembers: (projectId: string) => void;
 }
 
 export const ProjectListItem = ({
@@ -15,6 +16,7 @@ export const ProjectListItem = ({
   onEdit,
   onDelete,
   onAddTask,
+  onManageMembers,
 }: ProjectListItemProps) => {
   return (
     <tr className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
@@ -49,9 +51,15 @@ export const ProjectListItem = ({
         </button>
         <button
           onClick={() => onAddTask(project.id)}
-          className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+          className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 mr-3"
         >
           Añadir tarea
+        </button>
+        <button
+          onClick={() => onManageMembers(project.id)}
+          className="text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-300"
+        >
+          Miembros
         </button>
       </td>
     </tr>

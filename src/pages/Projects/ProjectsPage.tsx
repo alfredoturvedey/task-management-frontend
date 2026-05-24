@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import Button from "../../components/common/Button";
 import Alert from "../../components/common/Alert";
@@ -14,6 +14,7 @@ import {
   DialogContent,
 } from "../../components/common/Dialog";
 import ProjectForm from "../../components/forms/ProjectForm";
+import AssignProjectMemberForm from "../../components/forms/AssignProjectMemberForm";
 import { ProjectList } from "@/components/projects/ProjectList";
 import { Project } from "@/types/project.types";
 import { useNavigate } from "react-router-dom";
@@ -21,8 +22,10 @@ import { useNavigate } from "react-router-dom";
 const ProjectsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [memberProjectId, setMemberProjectId] = useState<string | null>(null);
   const {
     projects,
+    selectedProject,
     error: projectsError,
     pagination: projectPagination = {
       currentPage: 1,
@@ -31,9 +34,11 @@ const ProjectsPage = () => {
       totalPages: 0,
     },
     fetchProjects,
+    fetchProjectById,
     setPage: setProjectPage,
     setLimit: setProjectLimit,
     deleteProject,
+    setSelectedProject,
   } = useProjects();
   const {
     dialogOpen,
@@ -47,7 +52,7 @@ const ProjectsPage = () => {
     if (user?.id) {
       fetchProjects(user.id);
     }
-  }, [user?.id]);
+  }, [fetchProjects, user?.id]);
 
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
@@ -80,6 +85,26 @@ const ProjectsPage = () => {
   const handleAddTask = (projectId: string) => {
     //setShowAddTaskModal(projectId);
     navigate(`/tasks/${projectId}`);
+  };
+
+  const handleManageMembers = async (projectId: string) => {
+    const projectFromList = projects.find((project) => project.id === projectId);
+
+    setMemberProjectId(projectId);
+    if (projectFromList) {
+      setSelectedProject({ ...projectFromList, id: projectId });
+    }
+
+    try {
+      const project = await fetchProjectById(projectId);
+      setSelectedProject({ ...project, id: project.id || projectId });
+      openDialog("projectMembers");
+    } catch (err) {
+      console.error("Error cargando miembros del proyecto:", err);
+      if (projectFromList) {
+        openDialog("projectMembers");
+      }
+    }
   };
 
   const handleProjectPageChange = (page: number) => {
@@ -124,6 +149,7 @@ const ProjectsPage = () => {
           onEdit={handleEditProject}
           onDelete={handleDeleteProject}
           onAddTask={handleAddTask}
+          onManageMembers={handleManageMembers}
         />
       </div>
 
@@ -172,6 +198,61 @@ const ProjectsPage = () => {
               if (user?.id) fetchProjects(user.id);
             }}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Project Members Dialog */}
+      <Dialog
+        open={dialogOpen.projectMembers}
+        className="max-w-2xl"
+        onOpenChange={(open) => {
+          if (open) {
+            openDialog("projectMembers");
+            return;
+          }
+
+          closeDialog("projectMembers");
+          setSelectedProject(null);
+          setMemberProjectId(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Asignar miembro al proyecto</DialogTitle>
+            <DialogDescription>
+              Selecciona un usuario del sistema para asignarlo a{" "}
+              <span className="font-medium">
+                {selectedProject?.name ?? "este proyecto"}
+              </span>
+              .
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedProject ? (
+            <AssignProjectMemberForm
+              project={{
+                ...selectedProject,
+                id: selectedProject.id || memberProjectId || "",
+              }}
+              projectId={memberProjectId || selectedProject.id}
+              onAssigned={() => {
+                closeDialog("projectMembers");
+                setSelectedProject(null);
+                setMemberProjectId(null);
+                if (user?.id) {
+                  fetchProjects(
+                    user.id,
+                    projectPagination.currentPage,
+                    projectPagination.itemsPerPage,
+                  );
+                }
+              }}
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Cargando informacion del proyecto...
+            </p>
+          )}
         </DialogContent>
       </Dialog>
     </MainLayout>

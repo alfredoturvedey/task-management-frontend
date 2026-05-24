@@ -1,4 +1,5 @@
 import type { Project } from "./project.types";
+import type { User } from "./auth.types";
 
 export enum TaskStatus {
   PENDING = "pending",
@@ -20,6 +21,8 @@ export interface Task {
   priority: TaskPriority;
   project: Project;
   projectId: string;
+  assignedTo?: User | null;
+  assignedToId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,12 +32,14 @@ export interface CreateTaskPayload {
   description?: string;
   priority?: TaskPriority;
   projectId: string;
+  assignedToId?: string;
 }
 
 export interface UpdateTaskPayload {
   name?: string;
   description?: string;
   priority?: TaskPriority;
+  assignedToId?: string;
 }
 
 export interface UpdateTaskStatusPayload {

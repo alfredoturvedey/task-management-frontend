@@ -17,6 +17,7 @@ interface ProjectListProps {
   onEdit: (project: Project) => void;
   onDelete: (projectId: string) => void;
   onAddTask: (projectId: string) => void;
+  onManageMembers: (projectId: string) => void;
 }
 
 export const ProjectList = ({
@@ -29,6 +30,7 @@ export const ProjectList = ({
   onEdit,
   onDelete,
   onAddTask,
+  onManageMembers,
 }: ProjectListProps) => {
   if (isLoading) {
     return (
@@ -78,6 +80,7 @@ export const ProjectList = ({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onAddTask={onAddTask}
+                onManageMembers={onManageMembers}
               />
             ))}
           </tbody>

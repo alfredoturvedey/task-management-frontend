@@ -8,7 +8,6 @@ import type {
 } from "../types/task.types";
 import { tasksService } from "../api/services/tasks.service";
 import { PaginationMeta } from "@/types/pagination.types";
-import { useAuthStore } from "./authStore";
 
 interface TaskState {
   tasks: Task[];
@@ -205,9 +204,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   setPage: (page: number) => {
     set({ pagination: { ...get().pagination, currentPage: page } });
-    const { user } = useAuthStore.getState();
-    const { projectId } = get(); // Necesitarás almacenar el projectId actual en el store
-    // ... trigger de refetch
   },
   setLimit: (limit: number) => {
     set({

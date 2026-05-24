@@ -13,6 +13,7 @@ import RegisterPage from "./pages/Auth/RegisterPage";
 
 // Páginas Principales
 import ProjectsPage from "./pages/Projects/ProjectsPage";
+import ProjectDetailPage from "./pages/Projects/ProjectDetailPage";
 import TasksPage from "./pages/Tasks/TasksPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -74,6 +75,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProjectsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:id"
+          element={
+            <ProtectedRoute>
+              <ProjectDetailPage />
             </ProtectedRoute>
           }
         />
