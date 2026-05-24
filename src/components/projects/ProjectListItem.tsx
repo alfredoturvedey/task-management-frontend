@@ -1,4 +1,6 @@
-// src/components/projects/ProjectListItem.tsx
+﻿// src/components/projects/ProjectListItem.tsx
+import { Edit2, Eye, ListPlus, Trash2, Users } from "lucide-react";
+import IconActionButton from "../common/IconActionButton";
 import type { Project } from "../../types/project.types";
 
 interface ProjectListItemProps {
@@ -22,7 +24,7 @@ export const ProjectListItem = ({
     <tr className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
       <td className="p-4 text-gray-900 dark:text-white">{project.name}</td>
       <td className="p-4 text-gray-500 dark:text-gray-400">
-        {project.description || "—"}
+        {project.description || "â€”"}
       </td>
       <td className="p-4 text-sm text-gray-500 dark:text-gray-400">
         {project.id}
@@ -30,38 +32,46 @@ export const ProjectListItem = ({
       <td className="p-4 text-sm text-gray-500 dark:text-gray-400">
         {new Date(project.createdAt).toLocaleDateString()}
       </td>
-      <td className="p-4 text-right">
-        <button
-          onClick={() => onEdit(project)}
-          className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
-        >
-          Editar
-        </button>
-        <button
-          onClick={() => onDelete(project.id)}
-          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 mr-3"
-        >
-          Eliminar
-        </button>
-        <button
-          onClick={() => onViewTasks(project.id)}
-          className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 mr-3"
-        >
-          Ver tareas
-        </button>
-        <button
-          onClick={() => onAddTask(project.id)}
-          className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 mr-3"
-        >
-          Añadir tarea
-        </button>
-        <button
-          onClick={() => onManageMembers(project.id)}
-          className="text-orange-600 hover:text-orange-800 dark:text-orange-400 dark:hover:text-orange-300"
-        >
-          Miembros
-        </button>
+      <td className="p-4">
+        <div className="flex justify-end gap-1">
+          <IconActionButton
+            label="Editar"
+            variant="primary"
+            onClick={() => onEdit(project)}
+          >
+            <Edit2 className="h-4 w-4" />
+          </IconActionButton>
+          <IconActionButton
+            label="Eliminar"
+            variant="destructive"
+            onClick={() => onDelete(project.id)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </IconActionButton>
+          <IconActionButton
+            label="Ver tareas"
+            variant="success"
+            onClick={() => onViewTasks(project.id)}
+          >
+            <Eye className="h-4 w-4" />
+          </IconActionButton>
+          <IconActionButton
+            label="Agregar tarea"
+            variant="default"
+            onClick={() => onAddTask(project.id)}
+          >
+            <ListPlus className="h-4 w-4" />
+          </IconActionButton>
+          <IconActionButton
+            label="Miembros"
+            variant="warning"
+            onClick={() => onManageMembers(project.id)}
+          >
+            <Users className="h-4 w-4" />
+          </IconActionButton>
+        </div>
       </td>
     </tr>
   );
 };
+

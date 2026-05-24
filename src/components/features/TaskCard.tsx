@@ -86,6 +86,8 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
               variant="ghost"
               size="icon"
               onClick={() => onEdit?.(task)}
+              aria-label="Editar"
+              title="Editar"
               className="h-8 w-8"
             >
               <Edit2 className="h-4 w-4" />
@@ -95,6 +97,8 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
               size="icon"
               onClick={handleDelete}
               disabled={deleting || isLoading}
+              aria-label="Eliminar"
+              title="Eliminar"
               className="h-8 w-8 text-destructive hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />

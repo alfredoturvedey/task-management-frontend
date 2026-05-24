@@ -1,4 +1,6 @@
 import Loader from "../common/Loader";
+import { Edit2, Trash2 } from "lucide-react";
+import IconActionButton from "../common/IconActionButton";
 import type { Task, TaskStatus, TaskPriority } from "../../types/task.types";
 
 interface TaskTableProps {
@@ -149,19 +151,23 @@ const TaskTable = ({
                     </span>
                   )}
                 </td>
-                <td className="p-4 text-right">
-                  <button
-                    onClick={() => onEdit(task)}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => onDelete(task.id)}
-                    className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                  >
-                    Eliminar
-                  </button>
+                <td className="p-4">
+                  <div className="flex justify-end gap-1">
+                    <IconActionButton
+                      label="Editar"
+                      variant="primary"
+                      onClick={() => onEdit(task)}
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </IconActionButton>
+                    <IconActionButton
+                      label="Eliminar"
+                      variant="destructive"
+                      onClick={() => onDelete(task.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </IconActionButton>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Trash2, Edit2, Users, CheckCircle, Eye, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../common/Card';
@@ -27,7 +27,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
   const isOwner = project.ownerId === user?.id;
 
   const handleViewTasks = () => {
-    // Navega a la página de tareas, pasando el ID del proyecto
+    // Navega a la pÃ¡gina de tareas, pasando el ID del proyecto
     navigate(`/tasks/${project.id}`);
     // O a un modal, etc.
   };
@@ -58,7 +58,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
             <div className="flex-1">
               <CardTitle>{project.name}</CardTitle>
               <CardDescription>
-                {project.description || "Sin descripción"}
+                {project.description || "Sin descripciÃ³n"}
               </CardDescription>
             </div>
             {isOwner && (
@@ -67,6 +67,8 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
                   variant="ghost"
                   size="icon"
                   onClick={() => onEdit?.(project)}
+                  aria-label="Editar"
+                  title="Editar"
                   className="h-8 w-8"
                 >
                   <Edit2 className="h-4 w-4" />
@@ -76,15 +78,31 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
                   size="icon"
                   onClick={handleDelete}
                   disabled={deleting || isLoading}
+                  aria-label="Eliminar"
+                  title="Eliminar"
                   className="h-8 w-8 text-destructive hover:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleViewTasks}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleViewTasks}
+                  aria-label="Ver tareas"
+                  title="Ver tareas"
+                  className="h-8 w-8"
+                >
                   <Eye className="h-4 w-4" />
                 </Button>
 
-                <Button variant="outline" size="sm" onClick={handleAddTask}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleAddTask}
+                  aria-label="AÃ±adir tarea"
+                  title="AÃ±adir tarea"
+                  className="h-8 w-8"
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -106,7 +124,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
           )}
 
           <div className="text-xs text-muted-foreground">
-            {project.archived ? "📦 Archivado" : "✅ Activo"}
+            {project.archived ? "ðŸ“¦ Archivado" : "âœ… Activo"}
           </div>
         </CardContent>
       </Card>
@@ -139,3 +157,4 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 };
 
 export default ProjectCard;
+

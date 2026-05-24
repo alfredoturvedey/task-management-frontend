@@ -1,4 +1,5 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Edit2, Trash2 } from "lucide-react";
+import IconActionButton from "../common/IconActionButton";
 import type { Task } from "../../types/task.types";
 import type { PaginationMeta } from "../../types/pagination.types";
 
@@ -138,19 +139,23 @@ const TaskRow = ({
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
         {task.priority}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-        <button
-          onClick={() => onEdit(task)}
-          className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400"
-        >
-          Editar
-        </button>
-        <button
-          onClick={() => onDelete(task.id)}
-          className="text-red-600 hover:text-red-900 dark:text-red-400"
-        >
-          Eliminar
-        </button>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <div className="flex gap-1">
+          <IconActionButton
+            label="Editar"
+            variant="primary"
+            onClick={() => onEdit(task)}
+          >
+            <Edit2 className="h-4 w-4" />
+          </IconActionButton>
+          <IconActionButton
+            label="Eliminar"
+            variant="destructive"
+            onClick={() => onDelete(task.id)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </IconActionButton>
+        </div>
       </td>
     </tr>
   );
