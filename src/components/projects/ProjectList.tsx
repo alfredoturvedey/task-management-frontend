@@ -58,13 +58,13 @@ export const ProjectList = ({
                 Nombre
               </th>
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
-                Descripción
+                Descripcion
               </th>
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
                 ID
               </th>
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
-                Fecha Creación
+                Fecha Creacion
               </th>
               <th className="text-right p-4 font-semibold text-gray-900 dark:text-white">
                 Acciones
@@ -104,7 +104,7 @@ export const ProjectList = ({
             <option value={50}>50</option>
           </select>
           <span className="text-sm text-gray-700 dark:text-gray-300">
-            por página
+            por pagina
           </span>
         </div>
 
@@ -117,7 +117,7 @@ export const ProjectList = ({
             Anterior
           </button>
           <span className="text-sm text-gray-700 dark:text-gray-300">
-            Página {pagination.currentPage} de {pagination.totalPages || 1}
+            Pagina {pagination.currentPage} de {pagination.totalPages || 1}
           </span>
           <button
             onClick={() => onPageChange(pagination.currentPage + 1)}

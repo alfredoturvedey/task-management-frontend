@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, Edit2, Trash2 } from "lucide-react";
 import IconActionButton from "../common/IconActionButton";
 import type { Task } from "../../types/task.types";
 import type { PaginationMeta } from "../../types/pagination.types";
+import { formatOptionalText } from "../../utils/displayText";
 
 interface TaskTableProps {
   tasks: Task[];
@@ -131,7 +132,7 @@ const TaskRow = ({
         {task.name}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-        {task.description || "—"}
+        {formatOptionalText(task.description, "Sin descripcion")}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
         {task.status}

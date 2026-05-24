@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Trash2, Edit2, Users, CheckCircle, Eye, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../common/Card';
@@ -9,6 +9,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../common/Dialog';
 import TaskForm from '../forms/TaskForm';
 import { useTasks } from '@/hooks/useTasks';
+import { formatOptionalText } from '@/utils/displayText';
 
 interface ProjectCardProps {
   project: Project;
@@ -27,7 +28,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
   const isOwner = project.ownerId === user?.id;
 
   const handleViewTasks = () => {
-    // Navega a la pÃ¡gina de tareas, pasando el ID del proyecto
+    // Navega a la pagina de tareas, pasando el ID del proyecto
     navigate(`/tasks/${project.id}`);
     // O a un modal, etc.
   };
@@ -58,7 +59,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
             <div className="flex-1">
               <CardTitle>{project.name}</CardTitle>
               <CardDescription>
-                {project.description || "Sin descripciÃ³n"}
+                {formatOptionalText(project.description, "Sin descripcion")}
               </CardDescription>
             </div>
             {isOwner && (
@@ -99,8 +100,8 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
                   variant="outline"
                   size="icon"
                   onClick={handleAddTask}
-                  aria-label="AÃ±adir tarea"
-                  title="AÃ±adir tarea"
+                  aria-label="Agregar tarea"
+                  title="Agregar tarea"
                   className="h-8 w-8"
                 >
                   <Plus className="h-4 w-4" />
@@ -124,7 +125,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
           )}
 
           <div className="text-xs text-muted-foreground">
-            {project.archived ? "ðŸ“¦ Archivado" : "âœ… Activo"}
+            {project.archived ? "Archivado" : "Activo"}
           </div>
         </CardContent>
       </Card>
@@ -157,4 +158,3 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 };
 
 export default ProjectCard;
-

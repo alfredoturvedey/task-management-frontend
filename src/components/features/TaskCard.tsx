@@ -13,6 +13,7 @@ import { type Task, TaskStatus, TaskPriority } from "../../types/task.types";
 import { useTasks } from "../../hooks/useTasks";
 import { useAuth } from "../../hooks/useAuth";
 import cn from "../../utils/cn";
+import { formatOptionalText } from "../../utils/displayText";
 
 interface TaskCardProps {
   task: Task;
@@ -25,6 +26,7 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
   const { updateTaskStatus, updateTaskPriority, deleteTask, isLoading } =
     useTasks();
   const [deleting, setDeleting] = useState(false);
+  const description = formatOptionalText(task.description, "");
 
   const statusIcons = {
     [TaskStatus.PENDING]: <Clock className="h-4 w-4" />,
@@ -108,8 +110,8 @@ const TaskCard = ({ task, onEdit, onDelete }: TaskCardProps) => {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {task.description && (
-          <p className="text-sm text-muted-foreground">{task.description}</p>
+        {description && (
+          <p className="text-sm text-muted-foreground">{description}</p>
         )}
 
         <div className="grid grid-cols-2 gap-4">
