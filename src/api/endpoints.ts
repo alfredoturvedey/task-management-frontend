@@ -11,30 +11,27 @@ export const ENDPOINTS = {
 
   // Projects
   PROJECTS: {
-    LIST: (userId: string, page: number, limit: number) =>
-      `/api/projects/${userId}?page=${page}&limit=${limit}`,
+    LIST: (page: number, limit: number) =>
+      `/api/projects?page=${page}&limit=${limit}`,
     CREATE: "/api/projects",
     DETAIL: (id: string) => `/api/projects/${id}`,
     UPDATE: (id: string) => `/api/projects/${id}`,
-    DELETE: (userId: string, id: string) => `/api/projects/${userId}/${id}`,
-    ADD_MEMBER: (userId: string, id: string) =>
-      `/api/projects/${userId}/${id}/members`,
-    REMOVE_MEMBER: (userId: string, id: string, memberId: string) =>
-      `/api/projects/${userId}/${id}/members/${memberId}`,
+    DELETE: (id: string) => `/api/projects/${id}`,
+    ADD_MEMBER: (id: string) => `/api/projects/${id}/members`,
+    REMOVE_MEMBER: (id: string, memberId: string) =>
+      `/api/projects/${id}/members/${memberId}`,
   },
 
   // Tasks
   TASKS: {
-    LIST: (userId: string, projectId: string, page: number, limit: number) =>
-      `/api/tasks/${userId}/${projectId}?page=${page}&limit=${limit}`,
-    CREATE: (userId: string) => `/api/tasks/${userId}`,
+    LIST: (projectId: string, page: number, limit: number) =>
+      `/api/tasks/project/${projectId}?page=${page}&limit=${limit}`,
+    CREATE: "/api/tasks",
     DETAIL: (id: string) => `/api/tasks/${id}`,
-    UPDATE: (userId: string, id: string) => `/api/tasks/${userId}/${id}`,
-    DELETE: (userId: string, id: string) => `/api/tasks/${userId}/${id}`,
-    UPDATE_STATUS: (userId: string, id: string) =>
-      `/api/tasks/${userId}/${id}/status`,
-    UPDATE_PRIORITY: (userId: string, id: string) =>
-      `/api/tasks/${userId}/${id}/priority`,
+    UPDATE: (id: string) => `/api/tasks/${id}`,
+    DELETE: (id: string) => `/api/tasks/${id}`,
+    UPDATE_STATUS: (id: string) => `/api/tasks/${id}/status`,
+    UPDATE_PRIORITY: (id: string) => `/api/tasks/${id}/priority`,
   },
 
   // Users

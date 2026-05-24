@@ -32,7 +32,7 @@ export interface CreateTaskPayload {
   description?: string;
   priority?: TaskPriority;
   projectId: string;
-  assignedToId?: string;
+  assignedToId: string;
 }
 
 export interface UpdateTaskPayload {

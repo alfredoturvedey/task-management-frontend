@@ -18,14 +18,12 @@ export interface Project {
 export interface CreateProjectPayload {
   name: string;
   description?: string;
-  userId: string;
 }
 
 export interface UpdateProjectPayload {
   name?: string;
   description?: string;
   archived?: boolean;
-  userId: string;
 }
 
 export interface AddMemberPayload {

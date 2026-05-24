@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 export const createProjectSchema = z.object({
   name: z
@@ -7,8 +7,9 @@ export const createProjectSchema = z.object({
     .max(100, "El nombre no puede exceder 100 caracteres"),
   description: z
     .string()
-    .max(500, "La descripción no puede exceder 500 caracteres")
+    .max(500, "La descripcion no puede exceder 500 caracteres")
     .optional(),
+  archived: z.boolean().optional(),
 });
 
 export const updateProjectSchema = createProjectSchema.partial();

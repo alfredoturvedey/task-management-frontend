@@ -138,6 +138,7 @@ const ProjectsPage = () => {
         <ProjectList
           projects={projects}
           pagination={projectPagination}
+          currentUserId={user?.id}
           onPageChange={handleProjectPageChange}
           onLimitChange={handleProjectLimitChange}
           onViewTasks={handleViewTasks}

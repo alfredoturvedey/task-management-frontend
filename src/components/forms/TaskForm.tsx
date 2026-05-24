@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,8 +16,8 @@ import {
   TaskPriority,
   Task,
 } from "../../types/task.types";
-import { usersService } from "../../api/services/users.service";
 import type { User } from "../../types/auth.types";
+import type { Project } from "../../types/project.types";
 import Input from "../common/Input";
 import Select from "../common/Select";
 import Button from "../common/Button";
@@ -27,6 +27,7 @@ interface TaskFormProps {
   onSuccess?: () => void;
   onError?: (error: string) => void;
   projectId?: string;
+  project?: Project | null;
   task?: Task | null;
 }
 
@@ -36,34 +37,48 @@ const getTaskAssignedToId = (task?: Task | null) =>
 const getUserLabel = (user: User) =>
   [user.name, user.lastName].filter(Boolean).join(" ") || user.email;
 
-const normalizeOptionalId = (value?: string) => value || undefined;
+const normalizeAssignedId = (value?: string) => value || undefined;
 
-const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
+const uniqueUsers = (users: User[]) =>
+  users.filter(
+    (member, index, list) =>
+      member && list.findIndex((item) => item.id === member.id) === index,
+  );
+
+const TaskForm = ({ onSuccess, onError, projectId, project, task }: TaskFormProps) => {
   const { user } = useAuth();
   const { projects } = useProjects();
   const { createTask, updateTask, isLoading, error, clearError } = useTasks();
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [usersLoading, setUsersLoading] = useState(false);
   const isEditing = !!task;
   const assignedToId = getTaskAssignedToId(task);
+  const activeProject = project || task?.project || projects.find((p) => p.id === projectId);
+  const isOwner = activeProject?.ownerId === user?.id;
 
-  // Cargar todos los usuarios del sistema
-  useEffect(() => {
-    const loadUsers = async () => {
-      setUsersLoading(true);
-      try {
-        const users = await usersService.getAll();
-        setAllUsers(users);
-      } catch (err) {
-        console.error("Error cargando usuarios:", err);
-      } finally {
-        setUsersLoading(false);
-      }
-    };
+  const assignableUsers = useMemo(() => {
+    const projectUsers = activeProject
+      ? uniqueUsers([activeProject.owner, ...(activeProject.members ?? [])])
+      : [];
 
-    loadUsers();
-  }, []);
+    if (!isOwner) {
+      return uniqueUsers([task?.assignedTo, user].filter(Boolean) as User[]);
+    }
+
+    if (task?.assignedTo && !projectUsers.some((item) => item.id === task.assignedTo?.id)) {
+      return [task.assignedTo, ...projectUsers];
+    }
+
+    if (user && !projectUsers.some((item) => item.id === user.id)) {
+      return [user, ...projectUsers];
+    }
+
+    return projectUsers;
+  }, [activeProject, isOwner, task, user]);
+
+  const defaultAssignedToId = isEditing
+    ? assignedToId
+    : isOwner
+      ? assignableUsers[0]?.id || user?.id || ""
+      : user?.id || "";
 
   const {
     register,
@@ -77,26 +92,14 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: task.name,
           description: task.description || "",
           priority: task.priority,
-          assignedToId,
+          assignedToId: defaultAssignedToId,
         }
       : {
-          projectId: projectId,
+          projectId,
           priority: TaskPriority.MEDIUM,
-          assignedToId: "",
+          assignedToId: defaultAssignedToId,
         },
   });
-
-  const assignableUsers = useMemo(() => {
-    if (!task?.assignedTo) {
-      return allUsers;
-    }
-
-    const assignedUserExists = allUsers.some(
-      (systemUser) => systemUser.id === task.assignedTo?.id,
-    );
-
-    return assignedUserExists ? allUsers : [task.assignedTo, ...allUsers];
-  }, [allUsers, task]);
 
   useEffect(() => {
     if (task) {
@@ -106,8 +109,15 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
         priority: task.priority,
         assignedToId: getTaskAssignedToId(task),
       });
+      return;
     }
-  }, [task, reset]);
+
+    reset({
+      projectId,
+      priority: TaskPriority.MEDIUM,
+      assignedToId: defaultAssignedToId,
+    });
+  }, [defaultAssignedToId, projectId, reset, task]);
 
   const projectIdError =
     "projectId" in errors ? errors.projectId?.message : undefined;
@@ -116,7 +126,6 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
 
   const onSubmit = async (data: CreateTaskFormData | UpdateTaskFormData) => {
     try {
-      setSubmitError(null);
       clearError();
       if (!user?.id) throw new Error("Usuario no autenticado");
 
@@ -125,26 +134,30 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           name: data.name,
           description: data.description,
           priority: data.priority,
-          assignedToId: normalizeOptionalId(
+          assignedToId: normalizeAssignedId(
             (data as UpdateTaskFormData).assignedToId,
           ),
         };
         await updateTask(user.id, task.id, payload);
       } else {
         const createData = data as CreateTaskFormData;
+        const selectedAssignedToId = normalizeAssignedId(createData.assignedToId);
+
+        if (!selectedAssignedToId) {
+          throw new Error("El usuario asignado es requerido");
+        }
+
         const payload: CreateTaskPayload = {
           projectId: createData.projectId,
           name: createData.name,
           description: createData.description,
           priority: createData.priority,
-          assignedToId: normalizeOptionalId(createData.assignedToId),
+          assignedToId: selectedAssignedToId,
         };
         await createTask(user.id, payload);
-      }
-
-      if (!isEditing) {
         reset();
       }
+
       onSuccess?.();
     } catch (err: unknown) {
       const message: string =
@@ -153,16 +166,15 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
           : isEditing
             ? "Error al actualizar tarea"
             : "Error al crear tarea";
-      setSubmitError(message);
       onError?.(message);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {(error || submitError) && (
+      {error && (
         <Alert variant="destructive" onClose={clearError}>
-          {error || submitError}
+          {error}
         </Alert>
       )}
 
@@ -175,7 +187,7 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
 
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">
-          Descripción (Opcional)
+          Descripcion (Opcional)
         </label>
         <textarea
           className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -204,32 +216,23 @@ const TaskForm = ({ onSuccess, onError, projectId, task }: TaskFormProps) => {
       />
 
       <Select
-        label="Asignado a (Opcional)"
-        options={[
-          { value: "", label: "Sin asignar" },
-          ...assignableUsers.map((u) => ({
-            value: u.id,
-            label: getUserLabel(u),
-          })),
-        ]}
-        disabled={usersLoading}
+        label="Asignado a"
+        options={assignableUsers.map((assignableUser) => ({
+          value: assignableUser.id,
+          label: getUserLabel(assignableUser),
+        }))}
         {...register("assignedToId")}
         error={assignedToError}
       />
-
-      {usersLoading && (
-        <p className="text-xs text-muted-foreground">Cargando usuarios...</p>
+      {!isOwner && (
+        <p className="text-xs text-muted-foreground">
+          Las tareas creadas por miembros se asignan al usuario autenticado.
+        </p>
       )}
 
       <div className="flex gap-2">
         <Button type="submit" isLoading={isLoading}>
-          {isLoading
-            ? isEditing
-              ? "Actualizando..."
-              : "Creando..."
-            : isEditing
-              ? "Actualizar Tarea"
-              : "Crear Tarea"}
+          {isEditing ? "Actualizar Tarea" : "Crear Tarea"}
         </Button>
       </div>
     </form>

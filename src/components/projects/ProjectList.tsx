@@ -13,6 +13,7 @@ interface ProjectListProps {
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
   isLoading?: boolean;
+  currentUserId?: string;
   onViewTasks: (projectId: string) => void;
   onEdit: (project: Project) => void;
   onDelete: (projectId: string) => void;
@@ -26,6 +27,7 @@ export const ProjectList = ({
   onPageChange,
   onLimitChange,
   isLoading = false,
+  currentUserId,
   onViewTasks,
   onEdit,
   onDelete,
@@ -66,6 +68,9 @@ export const ProjectList = ({
               <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
                 Fecha Creacion
               </th>
+              <th className="text-left p-4 font-semibold text-gray-900 dark:text-white">
+                Estado
+              </th>
               <th className="text-right p-4 font-semibold text-gray-900 dark:text-white">
                 Acciones
               </th>
@@ -76,6 +81,7 @@ export const ProjectList = ({
               <ProjectListItem
                 key={project.id}
                 project={project}
+                currentUserId={currentUserId}
                 onViewTasks={onViewTasks}
                 onEdit={onEdit}
                 onDelete={onDelete}

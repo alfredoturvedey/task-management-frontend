@@ -11,13 +11,13 @@ import { ApiPaginatedResponse } from "@/types/pagination.types";
 
 export const tasksService = {
   async getAll(
-    userId: string,
+    _userId: string,
     projectId: string,
     page: number,
     limit: number,
   ): Promise<ApiPaginatedResponse<Task>> {
     const response = await axiosClient.get(
-      ENDPOINTS.TASKS.LIST(userId, projectId, page, limit),
+      ENDPOINTS.TASKS.LIST(projectId, page, limit),
     );
     return response.data;
   },
@@ -27,49 +27,46 @@ export const tasksService = {
     return response.data;
   },
 
-  async create(userId: string, payload: CreateTaskPayload): Promise<Task> {
-    const response = await axiosClient.post(
-      ENDPOINTS.TASKS.CREATE(userId),
-      payload,
-    );
+  async create(_userId: string, payload: CreateTaskPayload): Promise<Task> {
+    const response = await axiosClient.post(ENDPOINTS.TASKS.CREATE, payload);
     return response.data;
   },
 
   async update(
-    userId: string,
+    _userId: string,
     id: string,
     payload: UpdateTaskPayload,
   ): Promise<Task> {
     const response = await axiosClient.put(
-      ENDPOINTS.TASKS.UPDATE(userId, id),
+      ENDPOINTS.TASKS.UPDATE(id),
       payload,
     );
     return response.data;
   },
 
-  async delete(userId: string, id: string): Promise<void> {
-    await axiosClient.delete(ENDPOINTS.TASKS.DELETE(userId, id));
+  async delete(_userId: string, id: string): Promise<void> {
+    await axiosClient.delete(ENDPOINTS.TASKS.DELETE(id));
   },
 
   async updateStatus(
-    userId: string,
+    _userId: string,
     id: string,
     payload: UpdateTaskStatusPayload,
   ): Promise<Task> {
     const response = await axiosClient.put(
-      ENDPOINTS.TASKS.UPDATE_STATUS(userId, id),
+      ENDPOINTS.TASKS.UPDATE_STATUS(id),
       payload,
     );
     return response.data;
   },
 
   async updatePriority(
-    userId: string,
+    _userId: string,
     id: string,
     payload: UpdateTaskPriorityPayload,
   ): Promise<Task> {
     const response = await axiosClient.put(
-      ENDPOINTS.TASKS.UPDATE_PRIORITY(userId, id),
+      ENDPOINTS.TASKS.UPDATE_PRIORITY(id),
       payload,
     );
     return response.data;

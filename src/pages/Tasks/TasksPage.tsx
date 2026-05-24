@@ -25,7 +25,7 @@ const TasksPage = () => {
   const [taskToDeleteId, setTaskToDeleteId] = useState<string | null>(null);
   const { dialogOpen, openDialog, closeDialog, editingTask, setEditingTask } =
     useUIStore();
-  const { projects, fetchProjectById } = useProjects();
+  const { projects, selectedProject, fetchProjectById } = useProjects();
   const {
     tasks,
     pagination,
@@ -45,7 +45,17 @@ const TasksPage = () => {
     }
   }, [projectId, fetchProjectById]);
 
-  const currentProject = projects.find((p) => p.id === projectId);
+  const currentProject =
+    selectedProject?.id === projectId
+      ? selectedProject
+      : projects.find((p) => p.id === projectId);
+  const isProjectLoaded = !!currentProject;
+  const isArchived = currentProject?.archived ?? false;
+  const isProjectOwner = currentProject?.ownerId === user?.id;
+  const isOwnTask = (task: Task) =>
+    task.assignedToId === user?.id || task.assignedTo?.id === user?.id;
+  const canManageTask = (task: Task) =>
+    !isArchived && (isProjectOwner || isOwnTask(task));
 
   // Cargar tareas cuando cambie el proyecto, la página o el límite
   useEffect(() => {
@@ -134,10 +144,17 @@ const TasksPage = () => {
               </p>
             )}
           </div>
-          <Button onClick={() => openDialog("newTask")}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nueva Tarea
-          </Button>
+          {isProjectLoaded && !isArchived && (
+            <Button onClick={() => openDialog("newTask")}>
+              <Plus className="mr-2 h-4 w-4" />
+              Nueva Tarea
+            </Button>
+          )}
+          {isProjectLoaded && isArchived && (
+            <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+              Proyecto archivado: solo consulta
+            </span>
+          )}
         </div>
         <TaskTable
           tasks={tasks}
@@ -149,6 +166,10 @@ const TasksPage = () => {
           onDelete={setTaskToDeleteId}
           onStatusChange={handleStatusChange}
           onPriorityChange={handlePriorityChange}
+          canEditTask={canManageTask}
+          canDeleteTask={canManageTask}
+          canChangeStatus={canManageTask}
+          canChangePriority={canManageTask}
         />
 
         {/* New Task Dialog */}
@@ -167,6 +188,7 @@ const TasksPage = () => {
             </DialogHeader>
             <TaskForm
               projectId={projectId!}
+              project={currentProject}
               onSuccess={() => {
                 closeDialog("newTask");
                 if (user?.id && projectId) {
@@ -198,6 +220,7 @@ const TasksPage = () => {
             </DialogHeader>
             <TaskForm
               task={editingTask}
+              project={currentProject}
               onSuccess={() => {
                 closeDialog("editTask");
                 setEditingTask(null);

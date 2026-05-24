@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { TaskPriority, TaskStatus } from "../types/task.types";
 
-const optionalUuid = z.union([
-  z.string().uuid("El ID del usuario debe ser un UUID valido"),
-  z.literal(""),
-]).optional();
+const requiredUuid = z
+  .string({ error: "El usuario asignado es requerido" })
+  .uuid("El ID del usuario debe ser un UUID valido")
+  .min(1, "El usuario asignado es requerido");
 
 export const createTaskSchema = z.object({
   name: z
@@ -17,7 +17,7 @@ export const createTaskSchema = z.object({
     .optional(),
   priority: z.nativeEnum(TaskPriority).optional(),
   projectId: z.string({ error: "El proyecto es requerido" }),
-  assignedToId: optionalUuid,
+  assignedToId: requiredUuid,
 });
 
 export const updateTaskSchema = createTaskSchema

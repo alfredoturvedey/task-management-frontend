@@ -18,6 +18,10 @@ interface TaskTableProps {
   onDelete: (taskId: string) => void;
   onStatusChange?: (taskId: string, status: TaskStatus) => void;
   onPriorityChange?: (taskId: string, priority: TaskPriority) => void;
+  canEditTask?: (task: Task) => boolean;
+  canDeleteTask?: (task: Task) => boolean;
+  canChangeStatus?: (task: Task) => boolean;
+  canChangePriority?: (task: Task) => boolean;
 }
 
 const TaskTable = ({
@@ -30,6 +34,10 @@ const TaskTable = ({
   onDelete,
   onStatusChange,
   onPriorityChange,
+  canEditTask = () => true,
+  canDeleteTask = () => true,
+  canChangeStatus = () => true,
+  canChangePriority = () => true,
 }: TaskTableProps) => {
   if (isLoading) {
     return <Loader message="Cargando tareas..." />;
@@ -76,7 +84,7 @@ const TaskTable = ({
                   {task.name}
                 </td>
                 <td className="p-4">
-                  {onStatusChange ? (
+                  {onStatusChange && canChangeStatus(task) ? (
                     <select
                       value={task.status}
                       onChange={(e) =>
@@ -107,7 +115,7 @@ const TaskTable = ({
                   )}
                 </td>
                 <td className="p-4">
-                  {onPriorityChange ? (
+                  {onPriorityChange && canChangePriority(task) ? (
                     <select
                       value={task.priority}
                       onChange={(e) =>
@@ -153,20 +161,24 @@ const TaskTable = ({
                 </td>
                 <td className="p-4">
                   <div className="flex justify-end gap-1">
-                    <IconActionButton
-                      label="Editar"
-                      variant="primary"
-                      onClick={() => onEdit(task)}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </IconActionButton>
-                    <IconActionButton
-                      label="Eliminar"
-                      variant="destructive"
-                      onClick={() => onDelete(task.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </IconActionButton>
+                    {canEditTask(task) && (
+                      <IconActionButton
+                        label="Editar"
+                        variant="primary"
+                        onClick={() => onEdit(task)}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </IconActionButton>
+                    )}
+                    {canDeleteTask(task) && (
+                      <IconActionButton
+                        label="Eliminar"
+                        variant="destructive"
+                        onClick={() => onDelete(task.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </IconActionButton>
+                    )}
                   </div>
                 </td>
               </tr>

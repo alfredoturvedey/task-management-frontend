@@ -36,12 +36,12 @@ const ensureProjectId = (project: Project, fallbackId: string): Project => ({
 
 export const projectsService = {
   async getAll(
-    userId: string,
+    _userId: string,
     page: number,
     limit: number,
   ): Promise<PaginatedResponse<Project>> {
     const response = await axiosClient.get(
-      ENDPOINTS.PROJECTS.LIST(userId, page, limit),
+      ENDPOINTS.PROJECTS.LIST(page, limit),
     );
     // Asumimos que la API devuelve la paginación directamente en la respuesta
     // Si la estructura es { data: [...], meta: {...} }, usamos eso
@@ -87,17 +87,17 @@ export const projectsService = {
     return ensureProjectId(unwrapData<Project>(response.data), id);
   },
 
-  async delete(userId: string, id: string): Promise<void> {
-    await axiosClient.delete(ENDPOINTS.PROJECTS.DELETE(userId, id));
+  async delete(_userId: string, id: string): Promise<void> {
+    await axiosClient.delete(ENDPOINTS.PROJECTS.DELETE(id));
   },
 
   async addMember(
-    userId: string,
+    _userId: string,
     projectId: string,
     payload: AddMemberPayload,
   ): Promise<Project> {
     const response = await axiosClient.post(
-      ENDPOINTS.PROJECTS.ADD_MEMBER(userId, projectId),
+      ENDPOINTS.PROJECTS.ADD_MEMBER(projectId),
       payload,
     );
 
@@ -105,12 +105,12 @@ export const projectsService = {
   },
 
   async removeMember(
-    userId: string,
+    _userId: string,
     projectId: string,
     memberId: string,
   ): Promise<void> {
     await axiosClient.delete(
-      ENDPOINTS.PROJECTS.REMOVE_MEMBER(userId, projectId, memberId),
+      ENDPOINTS.PROJECTS.REMOVE_MEMBER(projectId, memberId),
     );
   },
 };

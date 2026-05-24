@@ -44,6 +44,7 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
       ? {
           name: project.name,
           description: project.description || "",
+          archived: project.archived,
         }
       : undefined,
   });
@@ -53,6 +54,7 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
       reset({
         name: project.name,
         description: project.description || "",
+        archived: project.archived,
       });
     }
   }, [project, reset]);
@@ -72,7 +74,7 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
         const payload: UpdateProjectPayload = {
           name: data.name,
           description: data.description || "",
-          userId: user.id,
+          archived: data.archived,
         };
         await updateProject(project.id, payload);
       } else {
@@ -80,7 +82,6 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
         const payload: CreateProjectPayload = {
           name: createData.name,
           description: data.description || "",
-          userId: user.id,
         };
         await createProject(payload);
       }
@@ -131,6 +132,17 @@ const ProjectForm = ({ onSuccess, onError, project }: ProjectFormProps) => {
           </p>
         )}
       </div>
+
+      {isEditing && (
+        <label className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <input
+            type="checkbox"
+            className="h-4 w-4 rounded border-input"
+            {...register("archived")}
+          />
+          Proyecto archivado
+        </label>
+      )}
 
       <div className="flex gap-2">
         <Button type="submit" isLoading={isLoading}>
