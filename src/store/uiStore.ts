@@ -1,4 +1,5 @@
 import { Project } from "@/types/project.types";
+import { Task } from "@/types/task.types";
 import { create } from "zustand";
 
 interface UIState {
@@ -11,6 +12,7 @@ interface UIState {
   };
 
   editingProject: Project | null;
+  editingTask: Task | null;
 
   // Actions
   toggleSidebar: () => void;
@@ -19,10 +21,12 @@ interface UIState {
   closeDialog: (dialog: keyof UIState["dialogOpen"]) => void;
   closeAllDialogs: () => void;
   setEditingProject: (project: Project | null) => void;
+  setEditingTask: (task: Task | null) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
   editingProject: null,
+  editingTask: null,
   sidebarOpen: true,
   dialogOpen: {
     newProject: false,
@@ -57,4 +61,6 @@ export const useUIStore = create<UIState>((set) => ({
 
   setEditingProject: (project: Project | null) =>
     set({ editingProject: project }),
+
+  setEditingTask: (task: Task | null) => set({ editingTask: task }),
 }));

@@ -39,7 +39,7 @@ const ProjectsPage = () => {
     dialogOpen,
     openDialog,
     closeDialog,
-    //editingProject,
+    editingProject,
     setEditingProject,
   } = useUIStore();
 
@@ -144,6 +144,31 @@ const ProjectsPage = () => {
           <ProjectForm
             onSuccess={() => {
               closeDialog("newProject");
+              if (user?.id) fetchProjects(user.id);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Project Dialog */}
+      <Dialog
+        open={dialogOpen.editProject}
+        onOpenChange={(open) =>
+          open ? openDialog("editProject") : closeDialog("editProject")
+        }
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Proyecto</DialogTitle>
+            <DialogDescription>
+              Actualiza los detalles del proyecto
+            </DialogDescription>
+          </DialogHeader>
+          <ProjectForm
+            project={editingProject}
+            onSuccess={() => {
+              closeDialog("editProject");
+              setEditingProject(null);
               if (user?.id) fetchProjects(user.id);
             }}
           />

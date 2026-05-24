@@ -1,5 +1,5 @@
 import Loader from "../common/Loader";
-import type { Task } from "../../types/task.types";
+import type { Task, TaskStatus, TaskPriority } from "../../types/task.types";
 
 interface TaskTableProps {
   tasks: Task[];
@@ -14,6 +14,8 @@ interface TaskTableProps {
   isLoading: boolean;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
+  onStatusChange?: (taskId: string, status: TaskStatus) => void;
+  onPriorityChange?: (taskId: string, priority: TaskPriority) => void;
 }
 
 const TaskTable = ({
@@ -24,6 +26,8 @@ const TaskTable = ({
   isLoading,
   onEdit,
   onDelete,
+  onStatusChange,
+  onPriorityChange,
 }: TaskTableProps) => {
   if (isLoading) {
     return <Loader message="Cargando tareas..." />;
@@ -67,38 +71,69 @@ const TaskTable = ({
                   {task.name}
                 </td>
                 <td className="p-4">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      task.status === "completed"
-                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                  {onStatusChange ? (
+                    <select
+                      value={task.status}
+                      onChange={(e) =>
+                        onStatusChange(task.id, e.target.value as TaskStatus)
+                      }
+                      className="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    >
+                      <option value="pending">Pendiente</option>
+                      <option value="in_progress">En progreso</option>
+                      <option value="completed">Completada</option>
+                    </select>
+                  ) : (
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        task.status === "completed"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : task.status === "in_progress"
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                            : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                      }`}
+                    >
+                      {task.status === "completed"
+                        ? "Completada"
                         : task.status === "in_progress"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                    }`}
-                  >
-                    {task.status === "completed"
-                      ? "Completada"
-                      : task.status === "in_progress"
-                        ? "En progreso"
-                        : "Pendiente"}
-                  </span>
+                          ? "En progreso"
+                          : "Pendiente"}
+                    </span>
+                  )}
                 </td>
                 <td className="p-4">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      task.priority === "high"
-                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  {onPriorityChange ? (
+                    <select
+                      value={task.priority}
+                      onChange={(e) =>
+                        onPriorityChange(
+                          task.id,
+                          e.target.value as TaskPriority,
+                        )
+                      }
+                      className="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    >
+                      <option value="low">Baja</option>
+                      <option value="medium">Media</option>
+                      <option value="high">Alta</option>
+                    </select>
+                  ) : (
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        task.priority === "high"
+                          ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          : task.priority === "medium"
+                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                            : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                      }`}
+                    >
+                      {task.priority === "high"
+                        ? "Alta"
                         : task.priority === "medium"
-                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                          : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                    }`}
-                  >
-                    {task.priority === "high"
-                      ? "Alta"
-                      : task.priority === "medium"
-                        ? "Media"
-                        : "Baja"}
-                  </span>
+                          ? "Media"
+                          : "Baja"}
+                    </span>
+                  )}
                 </td>
                 <td className="p-4 text-right">
                   <button
