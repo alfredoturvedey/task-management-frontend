@@ -11,11 +11,11 @@ export const PageSizeSelector = ({
 }: PageSizeSelectorProps) => {
   return (
     <div className="flex items-center space-x-2">
-      <span className="text-sm text-gray-600">Mostrar:</span>
+      <span className="text-sm text-gray-400">Mostrar:</span>
       <select
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="border rounded px-2 py-1 text-sm"
+        className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>
@@ -23,7 +23,7 @@ export const PageSizeSelector = ({
           </option>
         ))}
       </select>
-      <span className="text-sm text-gray-600">por página</span>
+      <span className="text-sm text-gray-400">por página</span>
     </div>
   );
 };

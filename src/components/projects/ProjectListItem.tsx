@@ -37,7 +37,7 @@ export const ProjectListItem = ({
           onClick={() => onEdit(project)}
           title="Editar"
         >
-          <Edit className="w-4 h-4" />
+          <Edit className="w-4 h-4 text-gray-500" />
         </Button>
         <Button
           variant="ghost"
@@ -45,7 +45,7 @@ export const ProjectListItem = ({
           onClick={() => onDelete(project.id)}
           title="Eliminar"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4 text-gray-500" />
         </Button>
         <Button
           variant="ghost"
@@ -53,7 +53,7 @@ export const ProjectListItem = ({
           onClick={() => onViewTasks(project.id)}
           title="Ver tareas"
         >
-          <Eye className="w-4 h-4" />
+          <Eye className="w-4 h-4 text-gray-500" />
         </Button>
         <Button
           variant="ghost"
@@ -61,7 +61,7 @@ export const ProjectListItem = ({
           onClick={() => onAddTask(project.id)}
           title="Añadir tarea"
         >
-          <PlusCircle className="w-4 h-4" />
+          <PlusCircle className="w-4 h-4 text-gray-500" />
         </Button>
       </td>
     </tr>

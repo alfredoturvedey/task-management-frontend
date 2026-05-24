@@ -19,6 +19,7 @@ import ProjectForm from "../../components/forms/ProjectForm";
 import { ProjectList } from "@/components/projects/ProjectList";
 import { Project } from "@/types/project.types";
 import { Pagination } from "@/components/common/Pagination";
+import { PageSizeSelector } from "@/components/common/PageSizeSelector";
 
 const ProjectsPage = () => {
   const { user } = useAuth();
@@ -114,6 +115,12 @@ const ProjectsPage = () => {
     }
   };
 
+  const handleProjectLimitChange = (limit: number) => {
+    if (user?.id) {
+      setProjectLimit(limit);
+    }
+  };
+
   return (
     <MainLayout>
       <div className="p-6 space-y-6">
@@ -125,6 +132,11 @@ const ProjectsPage = () => {
               Gestiona todos tus proyectos en un solo lugar
             </p>
           </div>
+
+          <PageSizeSelector
+            value={projectPagination.itemsPerPage}
+            onChange={handleProjectLimitChange}
+          />
           <Button onClick={() => openDialog("newProject")}>
             <Plus className="mr-2 h-4 w-4" />
             Nuevo Proyecto
@@ -149,7 +161,7 @@ const ProjectsPage = () => {
           className="mt-4"
         />
 
-        <div className="text-sm text-gray-500 mt-2 text-center">
+        <div className="text-sm text-gray-700 dark:text-gray-300">
           Mostrando {projects.length} de {projectPagination.totalItems}{" "}
           proyectos
         </div>
