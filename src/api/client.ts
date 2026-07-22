@@ -35,7 +35,7 @@ axiosClient.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expirado o inválido
       localStorage.removeItem(TOKEN_KEY);
-      window.location.href = "/login";
+      window.location.href = "/";
     }
 
     // Retornar el error para que lo maneje quien haga la llamada

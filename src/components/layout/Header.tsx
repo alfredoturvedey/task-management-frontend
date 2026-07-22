@@ -11,12 +11,12 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
     <header className="border-b border-input bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center justify-between h-16 px-4 sm:px-6">
+      <div className="flex items-center justify-between h-22 px-4 sm:px-6">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
@@ -26,7 +26,12 @@ const Header = () => {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">Task Manager</h1>
+          {/* <h1 className="text-xl font-bold text-foreground">Task Manager</h1> */}
+          <img
+            src="/logo.jpeg"
+            alt="Task Manager"
+            className="h-22 w-auto sm:h-12 md:h-22"
+          />
         </div>
 
         <div className="flex items-center gap-4">

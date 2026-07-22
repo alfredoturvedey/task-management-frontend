@@ -8,15 +8,12 @@ import {
 import { useAuth } from "./hooks/useAuth";
 
 // Páginas de Autenticación
-import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 
 // Páginas Principales
-import ProjectsPage from "./pages/Projects/ProjectsPage";
-import ProjectDetailPage from "./pages/Projects/ProjectDetailPage";
-import TasksPage from "./pages/Tasks/TasksPage";
 import UsersPage from "./pages/Users/UsersPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import HomePage from "./pages/Home/HomePage";
 
 // Componente para proteger rutas
 interface ProtectedRouteProps {
@@ -27,7 +24,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
@@ -54,10 +51,10 @@ function App() {
       <Routes>
         {/* Rutas Públicas */}
         <Route
-          path="/login"
+          path="/"
           element={
             <PublicRoute>
-              <LoginPage />
+              <HomePage />
             </PublicRoute>
           }
         />
@@ -71,30 +68,6 @@ function App() {
         />
 
         {/* Rutas Protegidas */}
-        <Route
-          path="/projects"
-          element={
-            <ProtectedRoute>
-              <ProjectsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects/:id"
-          element={
-            <ProtectedRoute>
-              <ProjectDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tasks/:projectId"
-          element={
-            <ProtectedRoute>
-              <TasksPage />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/users"
           element={
