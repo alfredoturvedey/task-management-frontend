@@ -9,6 +9,7 @@ import { useAuth } from "./hooks/useAuth";
 
 // Páginas de Autenticación
 import RegisterPage from "./pages/Auth/RegisterPage";
+import LoginPage from "./pages/Auth/LoginPage";
 
 // Páginas Principales
 import UsersPage from "./pages/Users/UsersPage";
@@ -55,6 +56,14 @@ function App() {
           element={
             <PublicRoute>
               <HomePage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage/>
             </PublicRoute>
           }
         />

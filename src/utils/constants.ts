@@ -1,5 +1,5 @@
 // Constantes de la aplicación
-export const APP_NAME = "Task Manager";
+export const APP_NAME = "IberoMax";
 
 export const TOAST_DURATION = 3000;
 

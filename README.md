@@ -95,7 +95,7 @@ Ejemplo:
 VITE_API_URL=http://localhost:3000
 
 # App Configuration
-VITE_APP_NAME=Task Manager
+VITE_APP_NAME=IberoMax
 VITE_APP_VERSION=1.0.0
 
 # Feature Flags
@@ -108,7 +108,7 @@ VITE_ENABLE_NOTIFICATIONS=true
 | Variable | Descripcion | Valor recomendado en local |
 | --- | --- | --- |
 | `VITE_API_URL` | URL base del backend | `http://localhost:3000` |
-| `VITE_APP_NAME` | Nombre visible/configurable de la app | `Task Manager` |
+| `VITE_APP_NAME` | Nombre visible/configurable de la app | `IberoMax` |
 | `VITE_APP_VERSION` | Version de la app | `1.0.0` |
 | `VITE_ENABLE_ANALYTICS` | Activa/desactiva analytics | `false` |
 | `VITE_ENABLE_NOTIFICATIONS` | Activa/desactiva notificaciones | `true` |

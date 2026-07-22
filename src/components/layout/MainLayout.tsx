@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 //import Sidebar from './Sidebar';
 import { useAuth } from '../../hooks/useAuth';
+import Footer from './Footer';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           {children}
         </main>
       </div>
+      <Footer/>
     </div>
   );
 };

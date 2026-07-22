@@ -6,7 +6,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2 text-center">
-          <CardTitle className="text-2xl">Task Manager</CardTitle>
+          <CardTitle className="text-2xl">IberoMax</CardTitle>
           <CardDescription>Inicia sesión en tu cuenta</CardDescription>
         </CardHeader>
         <CardContent>
