@@ -1,10 +1,14 @@
+import BannerHome from "@/components/features/Home/Banners";
 import MainLayout from "@/components/layout/MainLayout";
 
-const HomePage = () => { 
+const HomePage = () => {
 
   return (
     <MainLayout>
       <>
+        <div className="w-full">
+        <BannerHome/>
+        </div>
       </>
   </MainLayout>
   )

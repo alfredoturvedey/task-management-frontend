@@ -24,15 +24,15 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   // }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         {/* <Sidebar /> */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-y-auto overflow-x-visible">
           {children}
         </main>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

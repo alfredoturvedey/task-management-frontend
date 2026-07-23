@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
   //Facebook,
@@ -152,10 +151,10 @@ const Footer = () => {
               <li className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
                 <a
-                  href="mailto:contacto@reservapro.com"
+                  href="mailto:contacto@iberomax.com"
                   className="text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  contacto@reservapro.com
+                  contacto@iberomax.com
                 </a>
               </li>
               <li className="flex items-center space-x-3">
@@ -171,7 +170,7 @@ const Footer = () => {
         {/* Línea divisoria */}
         <div className="border-t border-slate-200 dark:border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            &copy; {currentYear} ReservaPro. Todos los derechos reservados.
+            &copy; {currentYear} IberoMax. Todos los derechos reservados.
           </p>
           <div className="flex items-center space-x-6">
             <Link

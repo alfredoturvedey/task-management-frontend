@@ -7,8 +7,8 @@ import {
   type RegisterFormData,
 } from "../../validators/auth.validators";
 import { useAuth } from "../../hooks/useAuth";
-import Input from "../common/Input";
-import Button from "../common/Button";
+import InputComponent from "../common/InputComponent";
+import { Button } from "@/components/ui/button"
 import Alert from "../common/Alert";
 
 interface RegisterFormProps {
@@ -52,7 +52,8 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         </Alert>
       )}
 
-      <Input
+      <InputComponent
+        htmlForm="input-field-name"
         label="Nombre"
         placeholder="Juan"
         type="text"
@@ -60,39 +61,43 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
         error={errors.name?.message}
       />
 
-      <Input
-        label="Apellido"
-        placeholder="Pérez"
+      <InputComponent
+        htmlForm="input-field-lastName"
+        label="Apellidos"
+        placeholder="Perez"
         type="text"
         {...register("lastName")}
         error={errors.lastName?.message}
       />
 
-      <Input
-        label="Correo Electrónico"
+      <InputComponent
+        htmlForm="input-field-email"
+        label="Correo electrónico"
         placeholder="tu@email.com"
         type="email"
         {...register("email")}
         error={errors.email?.message}
       />
 
-      <Input
+      <InputComponent
+        htmlForm="input-field-password"
         label="Contraseña"
-        placeholder="••••••••"
+        placeholder="**********"
         type="password"
         {...register("password")}
         error={errors.password?.message}
       />
 
-      <Input
+      <InputComponent
+        htmlForm="input-field-confirmPassword"
         label="Confirmar Contraseña"
-        placeholder="••••••••"
+        placeholder="**********"
         type="password"
         {...register("confirmPassword")}
         error={errors.confirmPassword?.message}
       />
 
-      <Button type="submit" isLoading={isLoading} className="w-full">
+      <Button type="submit" disabled={isLoading} className="w-full bg-blue-950">
         {isLoading ? "Registrando..." : "Registrarse"}
       </Button>
 

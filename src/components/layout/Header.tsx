@@ -35,10 +35,10 @@ const Header = () => {
 
         {!isAuthenticated && (
           <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate("/login")}>
+            <Button variant="outline" onClick={() => navigate('/login')}>
               Iniciar Sesión
             </Button>
-            <Button variant="default" onClick={() => navigate("/register")}>
+            <Button variant="default" onClick={() => navigate('/register')}>
               Registrarse
             </Button>
           </div>
