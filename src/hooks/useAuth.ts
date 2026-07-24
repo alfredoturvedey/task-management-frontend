@@ -1,7 +1,7 @@
 import { useAuthStore } from "../store/authStore";
 
 export const useAuth = () => {
-  const { user, token, isLoading, error, login, register, logout, clearError } =
+  const { user, token, isLoading, error, login, register, logout, clearError, changePassword } =
     useAuthStore();
 
   const isAuthenticated = !!token;
@@ -16,5 +16,6 @@ export const useAuth = () => {
     register,
     logout,
     clearError,
+    changePassword,
   };
 };

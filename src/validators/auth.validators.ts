@@ -10,6 +10,17 @@ export const loginSchema = z.object({
     .max(20, "La contraseña no puede exceder 20 caracteres"),
 });
 
+export const changePasswordSchema = z.object({
+  password: z
+    .string({ error: "La contraseña es requerida" })
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .max(20, "La contraseña no puede exceder 20 caracteres"),
+  confirmPassword: z
+    .string({ error: "La contraseña es requerida" })
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .max(20, "La contraseña no puede exceder 20 caracteres"),
+});
+
 export const registerSchema = z
   .object({
     email: z
@@ -36,3 +47,4 @@ export const registerSchema = z
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
+export type ChangePassowrdFormData = z.infer<typeof changePasswordSchema>;
