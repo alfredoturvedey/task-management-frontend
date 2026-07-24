@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../../hooks/useAuth";
 import { useUIStore } from "../../store/uiStore";
+import AccountComponent from "../features/Account/AccountComponent";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-slate-50 border-b border-input  backdrop-blur">
+    <header className="sticky top-0 z-50 bg-slate-50 border-b border-input backdrop-blur">
       <div className="flex items-center justify-between h-22 px-4 sm:px-6">
         <div className="flex items-center gap-4">
           <Button
@@ -35,7 +36,7 @@ const Header = () => {
           <Button
             className="text-blue-950"
             variant="link"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/")}
           >
             Inicio
           </Button>
@@ -43,7 +44,7 @@ const Header = () => {
           <Button
             className="text-blue-950"
             variant="link"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/products")}
           >
             Comprar
           </Button>
@@ -51,31 +52,14 @@ const Header = () => {
           <Button
             className="text-blue-950"
             variant="link"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/about")}
           >
             Sobre nostros
           </Button>
         </div>
 
         <div className="flex items-center gap-4">
-          {!isAuthenticated && (
-            <>
-              <Button
-                className="text-blue-950"
-                variant="link"
-                onClick={() => navigate("/login")}
-              >
-                Iniciar Sesión
-              </Button>
-              <Button
-                className="text-blue-950"
-                variant="link"
-                onClick={() => navigate("/register")}
-              >
-                Registrarse
-              </Button>
-            </>
-          )}
+          <AccountComponent />
 
           {isAuthenticated && (
             <>

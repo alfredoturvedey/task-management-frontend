@@ -16,6 +16,10 @@ import UsersPage from "./pages/Users/UsersPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/Home/HomePage";
 
+import AllProducts from "./pages/Products/AllProducts";
+import ProductDetails from "./pages/Products/ProductDetails";
+import About from "./pages/About/About";
+
 // Componente para proteger rutas
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -63,7 +67,7 @@ function App() {
           path="/login"
           element={
             <PublicRoute>
-              <LoginPage/>
+              <LoginPage />
             </PublicRoute>
           }
         />
@@ -72,6 +76,32 @@ function App() {
           element={
             <PublicRoute>
               <RegisterPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <PublicRoute>
+              <AllProducts />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/product/:id"
+          element={
+            <PublicRoute>
+              <ProductDetails />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/about"
+          element={
+            <PublicRoute>
+              <About />
             </PublicRoute>
           }
         />

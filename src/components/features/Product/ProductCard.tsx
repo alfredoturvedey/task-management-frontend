@@ -67,11 +67,11 @@ export const ProductCard = ({
 
   return (
     <Card
-      className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 ${className}`}
+      className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col ${className}`}
     >
       {/* Imagen + sello */}
-      <div className="relative aspect-square bg-gray-100">
-        <img src={image} alt={name} className="w-full h-full object-cover" />
+      <div className="relative aspect-square max-w-xs">
+        <img src={image} alt={name} className="w-full h-full object-contain" />
         {year && (
           <div className="absolute top-3 right-3 flex flex-col items-center justify-center w-16 h-16 rounded-full bg-white/90 shadow-md border-2 border-amber-600 text-center">
             <span className="text-[8px] font-bold text-amber-700 uppercase leading-tight">
@@ -84,8 +84,8 @@ export const ProductCard = ({
         )}
       </div>
 
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold text-gray-800 uppercase tracking-wide">
+      <CardHeader className="pb-1 pt-2 px-3">
+        <CardTitle className="text-sm font-bold text-gray-800 uppercase tracking-wide">
           {name}
         </CardTitle>
         {description && (
@@ -93,10 +93,10 @@ export const ProductCard = ({
         )}
       </CardHeader>
 
-      <CardContent className="pb-3 space-y-3">
+      <CardContent className="pb-2 px-3 space-y-2 flex-grow">
         {/* Precio y stock */}
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-blue-950">
+          <span className="text-xl font-bold text-blue-950">
             ${price.toFixed(2)}
           </span>
           <Badge variant="secondary" className="bg-blue-100 text-blue-950">
@@ -143,10 +143,10 @@ export const ProductCard = ({
         )}
       </CardContent>
 
-      <CardFooter className="pt-0">
+      <CardFooter className="pt-1 px-3 mt-auto">
         <Button
           onClick={handleAddToCart}
-          className="w-full bg-blue-950 hover:bg-blue-700 text-white"
+          className="w-full bg-blue-950 hover:bg-blue-700 text-white text-sm py-1"
           disabled={stock === 0}
         >
           <ShoppingCart className="w-4 h-4 mr-2" />

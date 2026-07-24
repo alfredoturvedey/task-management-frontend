@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import Header from './Header';
 //import Sidebar from './Sidebar';
-import { useAuth } from '../../hooks/useAuth';
 import Footer from './Footer';
 
 interface MainLayoutProps {
@@ -10,18 +8,6 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
-
-  // if (!isAuthenticated) {
-  //   return null;
-  // }
 
   return (
     <div className="min-h-screen flex flex-col">
