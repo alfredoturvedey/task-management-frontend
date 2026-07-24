@@ -1,4 +1,4 @@
-import { Menu, LogOut, User } from "lucide-react";
+import { Menu, LogOut, User, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../../hooks/useAuth";
@@ -59,24 +59,8 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          <ShoppingCart/>
           <AccountComponent />
-
-          {isAuthenticated && (
-            <>
-              <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-muted">
-                <User className="h-4 w-4" />
-                <span className="text-sm font-medium">{user?.name}</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleLogout}
-                className="text-destructive hover:text-destructive"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </>
-          )}
         </div>
       </div>
     </header>

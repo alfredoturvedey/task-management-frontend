@@ -67,7 +67,7 @@ export const ProductCard = ({
 
   return (
     <Card
-      className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col ${className}`}
+      className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col max-w-xs ${className}`}
     >
       {/* Imagen + sello */}
       <div className="relative aspect-square max-w-xs">
@@ -84,7 +84,7 @@ export const ProductCard = ({
         )}
       </div>
 
-      <CardHeader className="pb-1 pt-2 px-3">
+      <CardHeader className="pb-1 pt-1 px-2">
         <CardTitle className="text-sm font-bold text-gray-800 uppercase tracking-wide">
           {name}
         </CardTitle>
@@ -93,7 +93,7 @@ export const ProductCard = ({
         )}
       </CardHeader>
 
-      <CardContent className="pb-2 px-3 space-y-2 flex-grow">
+      <CardContent className="pb-1 px-2 space-y-1 flex-grow">
         {/* Precio y stock */}
         <div className="flex items-center justify-between">
           <span className="text-xl font-bold text-blue-950">
@@ -143,7 +143,7 @@ export const ProductCard = ({
         )}
       </CardContent>
 
-      <CardFooter className="pt-1 px-3 mt-auto">
+      <CardFooter className="pt-1 px-2 mt-auto">
         <Button
           onClick={handleAddToCart}
           className="w-full bg-blue-950 hover:bg-blue-700 text-white text-sm py-1"
