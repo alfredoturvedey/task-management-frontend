@@ -1,19 +1,16 @@
-import { Menu, LogOut, User, ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "../../hooks/useAuth";
 import { useUIStore } from "../../store/uiStore";
 import AccountComponent from "../features/Account/AccountComponent";
+import { Link } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
+import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
   const { toggleSidebar } = useUIStore();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 bg-slate-50 border-b border-input backdrop-blur">
@@ -59,7 +56,17 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <ShoppingCart/>
+          <Link to="/cart" className="relative">
+            <ShoppingCart className="w-5 h-5" />
+            {totalItems > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-2 -right-2 px-1.5 py-0.5 text-xs rounded-full"
+              >
+                {totalItems}
+              </Badge>
+            )}
+          </Link>
           <AccountComponent />
         </div>
       </div>

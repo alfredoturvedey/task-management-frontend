@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Minus, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductCardProps {
   id: string | number;
@@ -38,6 +40,7 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   // Estado local de cantidad
   const [quantity, setQuantity] = useState(initialQuantity);
+  const { addItem } = useCart();
 
   // Manejadores
   const increment = () => {
@@ -57,7 +60,25 @@ export const ProductCard = ({
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const product = {
+      id: String(id),
+      name,
+      description: description ?? "",
+      price,
+      category: "general",
+      image,
+      stock: stock ?? 10,
+      year,
+      createdAt: "",
+      updatedAt: "",
+    };
+
+    addItem(product, quantity);
+
     if (onAddToCart) {
       onAddToCart(id, quantity);
     }
@@ -71,7 +92,13 @@ export const ProductCard = ({
     >
       {/* Imagen + sello */}
       <div className="relative aspect-square max-w-xs">
-        <img src={image} alt={name} className="w-full h-full object-contain" />
+        <Link to={`/product/${5}`} className="block">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-contain"
+          />
+        </Link>
         {year && (
           <div className="absolute top-3 right-3 flex flex-col items-center justify-center w-16 h-16 rounded-full bg-white/90 shadow-md border-2 border-amber-600 text-center">
             <span className="text-[8px] font-bold text-amber-700 uppercase leading-tight">
@@ -114,7 +141,10 @@ export const ProductCard = ({
                 variant="outline"
                 size="icon"
                 className="h-8 w-8 rounded-full"
-                onClick={decrement}
+                onClick={(event) => {
+                  event.preventDefault();
+                  decrement();
+                }}
                 disabled={quantity <= 1}
               >
                 <Minus className="h-3 w-3" />
@@ -133,7 +163,10 @@ export const ProductCard = ({
                 variant="outline"
                 size="icon"
                 className="h-8 w-8 rounded-full"
-                onClick={increment}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  increment();
+                }}
                 disabled={quantity >= stock}
               >
                 <Plus className="h-3 w-3" />
@@ -145,7 +178,7 @@ export const ProductCard = ({
 
       <CardFooter className="pt-1 px-2 mt-auto">
         <Button
-          onClick={handleAddToCart}
+          onClick={(event) => handleAddToCart(event)}
           className="w-full bg-blue-950 hover:bg-blue-700 text-white text-sm py-1"
           disabled={stock === 0}
         >

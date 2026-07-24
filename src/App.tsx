@@ -19,6 +19,7 @@ import HomePage from "./pages/Home/HomePage";
 import AllProducts from "./pages/Products/AllProducts";
 import ProductDetails from "./pages/Products/ProductDetails";
 import About from "./pages/About/AboutPage";
+import CartPage from "./pages/Cart/CartPage";
 
 // Componente para proteger rutas
 interface ProtectedRouteProps {
@@ -102,6 +103,15 @@ function App() {
           element={
             <PublicRoute>
               <About />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <PublicRoute>
+              <CartPage />
             </PublicRoute>
           }
         />
