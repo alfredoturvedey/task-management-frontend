@@ -11,9 +11,9 @@ const SectionProducts = () => {
     <div className="container mx-auto py-8 px-4">
       {/* Titulo de la seccion  */}
       <div className="flex justify-center mb-8">
-        <h1 className="text-blue-950 font-bold text-4xl font-serif md:text-6xl">
-          Nuestros Productos
-        </h1>
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-blue-950 mb-10 font-serif">
+          Algunas de nuestras catagorias
+        </h2>
       </div>
 
       {/* Tabs  */}

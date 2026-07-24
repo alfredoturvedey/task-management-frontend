@@ -1,8 +1,8 @@
-import { Menu, LogOut, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import Button from '../common/Button';
-import { useAuth } from '../../hooks/useAuth';
-import { useUIStore } from '../../store/uiStore';
+import { Menu, LogOut, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "../../hooks/useAuth";
+import { useUIStore } from "../../store/uiStore";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -31,35 +31,69 @@ const Header = () => {
             alt="IberoMax"
             className="h-22 w-auto sm:h-12 md:h-22"
           />
+
+          <Button
+            className="text-blue-950"
+            variant="link"
+            onClick={() => navigate("/login")}
+          >
+            Inicio
+          </Button>
+
+          <Button
+            className="text-blue-950"
+            variant="link"
+            onClick={() => navigate("/login")}
+          >
+            Comprar
+          </Button>
+
+          <Button
+            className="text-blue-950"
+            variant="link"
+            onClick={() => navigate("/login")}
+          >
+            Sobre nostros
+          </Button>
         </div>
 
-        {!isAuthenticated && (
-          <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate('/login')}>
-              Iniciar Sesión
-            </Button>
-            <Button variant="default" onClick={() => navigate('/register')}>
-              Registrarse
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+          {!isAuthenticated && (
+            <>
+              <Button
+                className="text-blue-950"
+                variant="link"
+                onClick={() => navigate("/login")}
+              >
+                Iniciar Sesión
+              </Button>
+              <Button
+                className="text-blue-950"
+                variant="link"
+                onClick={() => navigate("/register")}
+              >
+                Registrarse
+              </Button>
+            </>
+          )}
 
-        {isAuthenticated && (
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-muted">
-              <User className="h-4 w-4" />
-              <span className="text-sm font-medium">{user?.name}</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              className="text-destructive hover:text-destructive"
-            >
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </div>
-        )}
+          {isAuthenticated && (
+            <>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-muted">
+                <User className="h-4 w-4" />
+                <span className="text-sm font-medium">{user?.name}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="text-destructive hover:text-destructive"
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

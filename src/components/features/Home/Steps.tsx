@@ -40,7 +40,7 @@ const HowItWorks = () => {
             className="border-0 shadow-md hover:shadow-xl transition-shadow duration-300"
           >
             <CardHeader className="flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mb-4">
+              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-950 mb-4">
                 <step.icon className="w-7 h-7" />
               </div>
               <CardTitle className="text-lg font-bold text-blue-950">
