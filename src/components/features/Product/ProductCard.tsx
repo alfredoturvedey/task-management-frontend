@@ -91,7 +91,7 @@ export const ProductCard = ({
       className={`overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col max-w-xs ${className}`}
     >
       {/* Imagen + sello */}
-      <div className="relative aspect-square max-w-xs">
+      <div className="relative w-full aspect-square overflow-hidden">
         <Link to={`/product/${5}`} className="block">
           <img
             src={image}
