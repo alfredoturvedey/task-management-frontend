@@ -4,6 +4,15 @@ import type { User, AuthResponse } from "../types/auth.types";
 import { authService } from "../api/services/auth.service";
 import { setAuthToken, removeAuthToken } from "../api/client";
 
+const mockUser: User = {
+  id: "1",
+  name: "Juan Pérez",
+  email: "juan@example.com",
+  phone: "+1 234 567 890",
+  address: "Av. Principal 123, Ciudad",
+  createdAt: "2024-01-15",
+};
+
 interface AuthState {
   user: User | null;
   token: string | null;
@@ -22,6 +31,7 @@ interface AuthState {
   clearError: () => void;
   setUser: (user: User | null) => void;
   changePassword: (currentPassword: string, newPassword: string) => void;
+  updateProfile: (data: Partial<User>) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -88,6 +98,17 @@ export const useAuthStore = create<AuthState>()(
         try {
           await authService.changePassword(currentPassword, newPassword);
           set({ isLoading: false });
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+      updateProfile: async (data: Partial<User>) => {
+        set({ isLoading: true, error: null });
+        try {
+          // Llamada al servicio
+          const updatedUser = await authService.updateProfile(data);
+          set({ user: updatedUser, isLoading: false });
         } catch (error) {
           set({ error: (error as Error).message, isLoading: false });
           throw error;

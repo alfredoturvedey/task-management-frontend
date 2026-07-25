@@ -6,6 +6,8 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   isActive?: boolean;
+  address?: string;
+  phone?: string;
 }
 
 export interface AuthResponse {

@@ -4,7 +4,21 @@ import type {
   LoginPayload,
   RegisterPayload,
   AuthResponse,
+  User,
 } from "../../types/auth.types";
+
+const users: User[] = [
+  {
+    id: "1",
+    name: "Juan",
+    email: "juan@example.com",
+    phone: "+1 234 567 890",
+    address: "Av. Principal 123, Ciudad",
+    createdAt: "2024-01-15",
+    updatedAt: "2024-01-15",
+    lastName: "Pérez",
+  },
+];
 
 export const authService = {
   async login(payload: LoginPayload): Promise<AuthResponse> {
@@ -28,5 +42,19 @@ export const authService = {
     } else {
       throw new Error("Contraseña actual incorrecta");
     }
+  },
+
+  updateProfile: async (data: Partial<User>): Promise<User> => {
+    // TODO: Reemplazar con llamada real a la API
+    // const response = await apiClient.put(ENDPOINTS.AUTH.PROFILE, data);
+    // return response.data;
+
+    // Simulación: actualizar el usuario mock
+    const userIndex = users.findIndex((u) => u.id === "1");
+    if (userIndex === -1) throw new Error("Usuario no encontrado");
+
+    const updatedUser = { ...users[userIndex], ...data };
+    users[userIndex] = updatedUser;
+    return updatedUser;
   },
 };
