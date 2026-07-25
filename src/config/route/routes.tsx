@@ -23,6 +23,7 @@ import About from "@/pages/About/AboutPage";
 import CartPage from "@/pages/Cart/CartPage";
 import ChangePasswordPage from "@/pages/Auth/ChangePasswordPage";
 import OrdersPage from "@/pages/Orders/OrdersPage";
+import OrderDetailPage from "@/pages/Orders/OrderDetailPage";
 
 // Componente para proteger rutas
 interface ProtectedRouteProps {
@@ -151,6 +152,15 @@ function RoutesComponents() {
           element={
             <ProtectedRoute>
               <OrdersPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/order/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetailPage/>
             </ProtectedRoute>
           }
         />

@@ -99,4 +99,20 @@ export const orderService = {
     mockOrders.push(newOrder);
     return newOrder;
   },
+
+  cancelOrder: async (orderId: string): Promise<Order> => {
+    // TODO: Llamada real
+    // const response = await apiClient.patch(ENDPOINTS.ORDERS.CANCEL(orderId));
+    // return response.data;
+    const order = mockOrders.find((o) => o.id === orderId);
+    if (!order) throw new Error("Orden no encontrada");
+    if (order.status !== "pending" && order.status !== "processing") {
+      throw new Error(
+        "Solo se pueden cancelar órdenes en estado pendiente o procesando",
+      );
+    }
+    order.status = "cancelled";
+    order.updatedAt = new Date().toISOString();
+    return order;
+  },
 };
