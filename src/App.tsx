@@ -129,9 +129,9 @@ function App() {
         <Route
           path="/changePassword"
           element={
-            <PublicRoute>
+            <ProtectedRoute>
               <ChangePasswordPage />
-            </PublicRoute>
+            </ProtectedRoute>
           }
         />
 
