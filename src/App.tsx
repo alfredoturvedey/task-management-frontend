@@ -22,6 +22,7 @@ import About from "./pages/About/AboutPage";
 import CartPage from "./pages/Cart/CartPage";
 import ChangePasswordPage from "./pages/Auth/ChangePasswordPage";
 import ProfilePage from "./pages/Auth/Profile";
+import OrdersPage from "./pages/Orders/OrdersPage";
 
 // Componente para proteger rutas
 interface ProtectedRouteProps {
@@ -142,6 +143,15 @@ function App() {
             <PublicRoute>
               <ProfilePage />
             </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <OrdersPage />
+            </ProtectedRoute>
           }
         />
 
