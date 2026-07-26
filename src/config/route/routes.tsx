@@ -34,7 +34,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
@@ -49,7 +49,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to="/projects" replace />;
+    return <Navigate to="/products" replace />;
   }
 
   return <>{children}</>;
@@ -60,14 +60,7 @@ function RoutesComponents() {
     <Router>
       <Routes>
         {/* Rutas Públicas */}
-        <Route
-          path="/"
-          element={
-            <PublicRoute>
-              <HomePage />
-            </PublicRoute>
-          }
-        />
+        <Route path="/" element={<HomePage />} />
         <Route
           path="/login"
           element={
@@ -141,9 +134,9 @@ function RoutesComponents() {
         <Route
           path="/profile"
           element={
-            <PublicRoute>
+            <ProtectedRoute>
               <ProfilePage />
-            </PublicRoute>
+            </ProtectedRoute>
           }
         />
 
@@ -160,13 +153,12 @@ function RoutesComponents() {
           path="/order/:id"
           element={
             <ProtectedRoute>
-              <OrderDetailPage/>
+              <OrderDetailPage />
             </ProtectedRoute>
           }
         />
 
         {/* Rutas Especiales */}
-        <Route path="/" element={<Navigate to="/projects" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

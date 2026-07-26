@@ -34,7 +34,7 @@ const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
       clearError();
       await authRegister(data.email, data.password, data.name, data.lastName);
       onSuccess?.();
-      navigate("/projects");
+      navigate("/");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       setSubmitError(message || "Error al registrarse");

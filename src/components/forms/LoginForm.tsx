@@ -34,7 +34,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
       clearError();
       await login(data.email, data.password);
       onSuccess?.();
-      navigate("/projects");
+      navigate("/");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       setSubmitError(message || "Error al iniciar sesión");
