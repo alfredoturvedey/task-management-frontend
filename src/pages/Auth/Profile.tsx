@@ -28,7 +28,8 @@ import InputComponent from "@/components/common/InputComponent";
 
 // Esquema de validación para editar perfil
 const profileSchema = z.object({
-  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  firstName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  lastName: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
   email: z.string().email("Email inválido"),
   phone: z.string().optional(),
   address: z.string().optional(),
@@ -40,34 +41,38 @@ const ProfilePage = () => {
   const { user, isLoading, error, updateProfile, clearError } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
-  const form = useForm<ProfileFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors},
+  } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.name || "",
+      firstName: user?.firstName || "",
       email: user?.email || "",
       phone: user?.phone || "",
       address: user?.address || "",
+      lastName: user?.lastName || "",
     },
   });
 
   const onSubmit = async (values: ProfileFormValues) => {
     try {
       clearError();
-      await updateProfile(values);
+      await updateProfile(user!.id, values);
       setIsEditing(false);
     } catch (error) {
-      // El error se captura en el store y se muestra en el formulario
       console.log(error);
     }
   };
 
   const handleCancel = () => {
-    form.reset({
-      name: user?.name || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      address: user?.address || "",
-    });
+    // reset({
+    //   firstName: user?.firstName || "",
+    //   email: user?.email || "",
+    //   phone: user?.phone || "",
+    //   address: user?.address || "",
+    // });
     setIsEditing(false);
   };
 
@@ -110,7 +115,7 @@ const ProfilePage = () => {
           <CardContent>
             {isEditing ? (
               <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(onSubmit)}
                 className="space-y-4"
               >
                 <InputComponent
@@ -118,7 +123,7 @@ const ProfilePage = () => {
                   label="Nombre"
                   type="text"
                   placeholder="Nombre"
-                  value={user.name}
+                  {...register("firstName")}
                 />
 
                 <InputComponent
@@ -126,7 +131,7 @@ const ProfilePage = () => {
                   label="Correo electrónico"
                   type="email"
                   placeholder="Correo electrónico"
-                  value={user.email}
+                  {...register("email")}
                 />
 
                 <InputComponent
@@ -134,15 +139,15 @@ const ProfilePage = () => {
                   label="Apellidos"
                   type="text"
                   placeholder="Apellidos"
-                  value={user.lastName}
+                  {...register("lastName")}
                 />
 
                 <InputComponent
-                  htmlForm="lastName-profile"
+                  htmlForm="phone-profile"
                   label="Teléfono"
                   type="text"
                   placeholder="Teléfono"
-                  value={user.lastName}
+                  {...register("phone")}
                 />
 
                 <InputComponent
@@ -150,7 +155,7 @@ const ProfilePage = () => {
                   label="Dirección"
                   type="text"
                   placeholder="Dirección"
-                  value={user.address}
+                  {...register("address")}
                 />
 
                 {error && (
@@ -190,7 +195,7 @@ const ProfilePage = () => {
                 <div className="flex items-center gap-3 text-lg">
                   <User className="w-5 h-5 text-blue-950" />
                   <span className="font-medium">Nombre:</span>
-                  <span>{user.name}</span>
+                  <span>{user.firstName}</span>
                 </div>
                 <div className="flex items-center gap-3 text-lg">
                   <Mail className="w-5 h-5 text-blue-950" />

@@ -16,15 +16,15 @@ const AccountComponent = () => {
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
 
+  console.log(user)
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          // <Button variant="outline">Open</Button>
-
           <div className="flex items-center gap-2 px-3 py-2 rounded-md">
             <User />
-            <span className="text-sm font-medium">{user?.name}</span>
+            <span className="text-sm font-medium">{user?.firstName}</span>
           </div>
         }
       />
@@ -33,7 +33,7 @@ const AccountComponent = () => {
           <>
             <DropdownMenuGroup>
               <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>
                 Perfil
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </DropdownMenuItem>
@@ -41,7 +41,7 @@ const AccountComponent = () => {
                 Mis pedidos
                 <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/change-password")}>
                 Cambiar Contraseña
                 <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
               </DropdownMenuItem>

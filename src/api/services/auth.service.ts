@@ -10,7 +10,7 @@ import type {
 const users: User[] = [
   {
     id: "1",
-    name: "Juan",
+    firstName: "Juan",
     email: "juan@example.com",
     phone: "+1 234 567 890",
     address: "Av. Principal 123, Ciudad",
@@ -31,30 +31,17 @@ export const authService = {
     return response.data;
   },
 
-  async changePassword(currentPassword: string, newPassword: string) {
-    // TODO: Reemplazar con llamada real a la API
-    // await apiClient.post(ENDPOINTS.AUTH.CHANGE_PASSWORD, { currentPassword, newPassword });
-
-    // Simulación: si la contraseña actual es "password123" funciona
-    if (currentPassword === "password123") {
-      // Simular éxito
-      return;
-    } else {
-      throw new Error("Contraseña actual incorrecta");
-    }
+  async changePassword(userId:string, currentPassword: string, newPassword: string) {
+    const response = await axiosClient.patch(ENDPOINTS.AUTH.CHANGE_PASSWORD(userId), {
+      currentPassword,
+      newPassword: newPassword,
+      confirmPassword: newPassword,
+    })
+    return response.data;
   },
 
-  updateProfile: async (data: Partial<User>): Promise<User> => {
-    // TODO: Reemplazar con llamada real a la API
-    // const response = await apiClient.put(ENDPOINTS.AUTH.PROFILE, data);
-    // return response.data;
-
-    // Simulación: actualizar el usuario mock
-    const userIndex = users.findIndex((u) => u.id === "1");
-    if (userIndex === -1) throw new Error("Usuario no encontrado");
-
-    const updatedUser = { ...users[userIndex], ...data };
-    users[userIndex] = updatedUser;
-    return updatedUser;
+  updateProfile: async (userId: string,data: Partial<User>): Promise<User> => {
+    const response = await axiosClient.patch(ENDPOINTS.AUTH.UPDATE_PROFILE(userId), data);
+    return response.data;
   },
 };

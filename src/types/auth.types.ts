@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
   lastName: string;
   createdAt: string;
   updatedAt: string;
@@ -23,8 +23,10 @@ export interface LoginPayload {
 export interface RegisterPayload {
   email: string;
   password: string;
-  name: string;
+  firstName: string;
   lastName: string;
+  address: string;
+  phone: string;
 }
 
 export interface CreateUserPayload {
